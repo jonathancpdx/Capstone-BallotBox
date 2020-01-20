@@ -1,0 +1,5 @@
+How does the SBB work? Live demo and all the components that produce an SBB.
+What’s the cost limit or what is the advised range of cost for our design?
+For the software portion, do we just use the software already made? From my understanding, the only part of the code that would need to get changed is the specified portion for the chip being used. For this case the code is being used for an FPGA and we need to change the code to work with the chip we select? - Need more clarification  
+Which part of the project was for mechanical engineers? Which part is going to be taken out as well as how is the project going to change accordingly for it to be only a EE/CE project?
+Are we only changing the chip in the SBB or are we going to be making a whole new design? If we don’t have to change the exterior design, we can reverse engineer and see how they created the SBB. 
