@@ -6,7 +6,7 @@
 5.
 
 
-Nick's Questions
+## Nick's Questions
 1. Are we taking the current project and adding on to it? As mentioned in the CASCADES page that this project is great to teach cybersecurity topics?.
 
 2. Must there be a retrieve functionality in our version of the Smart Ballot Box?
