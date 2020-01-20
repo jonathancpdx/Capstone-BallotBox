@@ -7,3 +7,9 @@ This is our Github repo for ECE412/413 Senior Capstone. All documentation and pr
 - Ali Saad
 - Nick Long
 - Jiaqi Liu
+
+### Sponsor: 
+- Free & Fair
+
+### PSU Advisor:
+- Tom Schubert
