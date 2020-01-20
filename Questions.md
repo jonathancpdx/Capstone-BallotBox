@@ -1,9 +1,10 @@
 # Questions for Sponsor
-1.
-2.
-3.
-4.
-5.
+1. What's our main goal besides more affordable components?  Maintain the existing functionality and security of the SBB? 
+   Adding additional features? 
+2. How is the QR code established in the BMD?
+3. What's the procedure when using the resources such as project space?
+4. Are we able to work on this project outside of the office?
+5. 
 
 
 ## Nick's Questions
