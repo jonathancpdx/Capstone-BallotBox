@@ -5,3 +5,7 @@ January 14th, 2020 - Team + PSU Advisor (FAB)
 
 January 20th, 2020 - Team + Industry Sponsor (Free&Fair Offices)
 
+January 29th, 2020 - Ali, Nick and Jiaqi + PSU Advisor (FAB)
+
+
+
