@@ -1,0 +1,3 @@
+[submodule "FreeRTOS/Arduino_FreeRTOS_Library"]
+	path = FreeRTOS/Arduino_FreeRTOS_Library
+	url = https://github.com/alisaad3/Arduino_FreeRTOS_Library.git
