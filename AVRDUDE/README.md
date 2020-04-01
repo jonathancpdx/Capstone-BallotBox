@@ -23,14 +23,16 @@ Under Devices -> USB, check the box next to your Arduino device
 ```
 sudo ./compile
 ```
-#### avrdude ser_open() can't open device
-If you encounter this error it is likely a permission issue. try the following
-```
-sudo chmod a+rw <LocationOfArduinoDevice>
-```
-In my case the Adruino was connected at "/dev/tryACM0"
 
 ### How to Upload
 ```
 sudo ./upload
 ```
+
+## Possible Errors
+### Error: avrdude ser_open() can't open device
+If you encounter this error it is likely a permission issue. try the following
+```
+sudo chmod a+rw <LocationOfArduinoDevice>
+```
+In my case the Adruino was connected at "/dev/tryACM0"
