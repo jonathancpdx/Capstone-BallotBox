@@ -5,7 +5,7 @@
 * avr-gcc
 * avr-dude
 * avr-libc
-```
+---
 ##Getting Started
 Below will list steps to get setup and running
 ### How to Installing
