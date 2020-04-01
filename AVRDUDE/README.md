@@ -6,7 +6,7 @@
 * avr-dude
 * avr-libc
 ---
-##Getting Started
+## Getting Started
 Below will list steps to get setup and running
 ### How to Installing
 ### How to Compile
