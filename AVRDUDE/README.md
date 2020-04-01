@@ -28,7 +28,7 @@ sudo ./compile
 ```
 sudo ./upload
 ```
-
+---
 ## Possible Errors
 ### Error: avrdude ser_open() can't open device
 If you encounter this error it is likely a permission issue. try the following
