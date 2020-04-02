@@ -1,0 +1,51 @@
+serial/serial.c: In function ‘xSerialPortInitMinimal’:
+serial/serial.c:110:3: error: ‘UBRRL’ undeclared (first use in this function)
+   UBRRL = ucByte;
+   ^
+serial/serial.c:110:3: note: each undeclared identifier is reported only once for each function it appears in
+serial/serial.c:114:3: error: ‘UBRRH’ undeclared (first use in this function)
+   UBRRH = ucByte;
+   ^
+serial/serial.c:118:3: error: ‘UCSRB’ undeclared (first use in this function)
+   UCSRB = ( serRX_INT_ENABLE | serRX_ENABLE | serTX_ENABLE );
+   ^
+serial/serial.c:121:3: error: ‘UCSRC’ undeclared (first use in this function)
+   UCSRC = ( serUCSRC_SELECT | serEIGHT_DATA_BITS );
+   ^
+serial/serial.c: In function ‘xSerialPutChar’:
+serial/serial.c:77:11: error: ‘UCSRB’ undeclared (first use in this function)
+  ucByte = UCSRB;           \
+           ^
+serial/serial.c:161:2: note: in expansion of macro ‘vInterruptOn’
+  vInterruptOn();
+  ^
+serial/serial.c: In function ‘vSerialClose’:
+serial/serial.c:87:13: error: ‘UCSRB’ undeclared (first use in this function)
+  ucInByte = UCSRB;          \
+             ^
+serial/serial.c:179:3: note: in expansion of macro ‘vInterruptOff’
+   vInterruptOff();
+   ^
+In file included from serial/serial.c:52:0:
+serial/serial.c: In function ‘SIG_UART_RECV’:
+serial/serial.c:188:9: warning: ‘SIG_UART_RECV’ appears to be a misspelled signal handler, missing __vector prefix [-Wmisspelled-isr]
+ SIGNAL( SIG_UART_RECV )
+         ^
+serial/serial.c:196:10: error: ‘UDR’ undeclared (first use in this function)
+  cChar = UDR;
+          ^
+In file included from serial/serial.c:52:0:
+serial/serial.c: In function ‘SIG_UART_DATA’:
+serial/serial.c:207:9: warning: ‘SIG_UART_DATA’ appears to be a misspelled signal handler, missing __vector prefix [-Wmisspelled-isr]
+ SIGNAL( SIG_UART_DATA )
+         ^
+serial/serial.c:214:3: error: ‘UDR’ undeclared (first use in this function)
+   UDR = cChar;
+   ^
+serial/serial.c:87:13: error: ‘UCSRB’ undeclared (first use in this function)
+  ucInByte = UCSRB;          \
+             ^
+serial/serial.c:219:3: note: in expansion of macro ‘vInterruptOff’
+   vInterruptOff();
+   ^
+make: *** [serial/serial.o] Error 1
