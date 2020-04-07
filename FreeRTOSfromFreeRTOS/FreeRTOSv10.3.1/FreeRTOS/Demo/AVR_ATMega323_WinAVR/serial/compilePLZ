@@ -1,0 +1,1 @@
+avr-gcc -g -Os -mmcu=atmega328p -I../../../Source/include/ -I../../Common/include/ -I../ -I../../../Source/portable/GCC/ATMega323 -c serial.c -o compedSerial

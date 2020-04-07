@@ -74,9 +74,9 @@ static QueueHandle_t xCharsForTx;
 {															\
 	unsigned char ucByte;								\
 															\
-	ucByte = UCSRB;											\
+	ucByte = UCSR0B;											\
 	ucByte |= serTX_INT_ENABLE;								\
-	UCSRB = ucByte;											\
+	UCSR0B = ucByte;											\
 }																				
 /*-----------------------------------------------------------*/
 
@@ -84,9 +84,9 @@ static QueueHandle_t xCharsForTx;
 {															\
 	unsigned char ucInByte;								\
 															\
-	ucInByte = UCSRB;										\
+	ucInByte = UCSR0B;										\
 	ucInByte &= ~serTX_INT_ENABLE;							\
-	UCSRB = ucInByte;										\
+	UCSR0B = ucInByte;										\
 }
 /*-----------------------------------------------------------*/
 
@@ -107,18 +107,18 @@ unsigned char ucByte;
 
 		/* Set the baud rate. */	
 		ucByte = ( unsigned char ) ( ulBaudRateCounter & ( unsigned long ) 0xff );	
-		UBRRL = ucByte;
+		UBRR0L = ucByte;
 
 		ulBaudRateCounter >>= ( unsigned long ) 8;
 		ucByte = ( unsigned char ) ( ulBaudRateCounter & ( unsigned long ) 0xff );	
-		UBRRH = ucByte;
+		UBRR0H = ucByte;
 
 		/* Enable the Rx interrupt.  The Tx interrupt will get enabled
 		later. Also enable the Rx and Tx. */
-		UCSRB = ( serRX_INT_ENABLE | serRX_ENABLE | serTX_ENABLE );
+		UCSR0B = ( serRX_INT_ENABLE | serRX_ENABLE | serTX_ENABLE );
 
 		/* Set the data bits to 8. */
-		UCSRC = ( serUCSRC_SELECT | serEIGHT_DATA_BITS );
+		UCSR0C = ( serUCSRC_SELECT | serEIGHT_DATA_BITS );
 	}
 	portEXIT_CRITICAL();
 	
@@ -177,9 +177,9 @@ unsigned char ucByte;
 	portENTER_CRITICAL();
 	{
 		vInterruptOff();
-		ucByte = UCSRB;
+		ucByte = UCSR0B;
 		ucByte &= ~serRX_INT_ENABLE;
-		UCSRB = ucByte;
+		UCSR0B = ucByte;
 	}
 	portEXIT_CRITICAL();
 }
@@ -193,7 +193,7 @@ signed portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 	/* Get the character and post it on the queue of Rxed characters.
 	If the post causes a task to wake force a context switch as the woken task
 	may have a higher priority than the task we have interrupted. */
-	cChar = UDR;
+	cChar = UDR0;
 
 	xQueueSendFromISR( xRxedChars, &cChar, &xHigherPriorityTaskWoken );
 
@@ -211,7 +211,7 @@ signed char cChar, cTaskWoken;
 	if( xQueueReceiveFromISR( xCharsForTx, &cChar, &cTaskWoken ) == pdTRUE )
 	{
 		/* Send the next character queued for Tx. */
-		UDR = cChar;
+		UDR0 = cChar;
 	}
 	else
 	{
