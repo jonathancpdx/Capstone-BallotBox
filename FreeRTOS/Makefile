@@ -37,7 +37,7 @@ MCU = atmega328p
 FORMAT = ihex
 
 # Target file name (without extension).
-TARGET = rtosdemo
+TARGET =  /examples/Blink_AnalogRead/Blink_AnalogRead
 
 # Optimization level, can be [0, 1, 2, 3, s]. 0 turns off optimization.
 # (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
@@ -45,26 +45,38 @@ OPT = s
 
 
 # List C source files here. (C dependencies are automatically generated.)
-DEMO_DIR = ../Common/Minimal
-SOURCE_DIR = ../../Source
-PORT_DIR = ../../Source/portable/GCC/ATMega323
+EXAMPLE_DIR = ../examples
+SOURCE_DIR = ../src
+PORT_DIR = ../../src/portable/GCC/ATMega328
 
 SRC	= \
-main.c \
-ParTest/ParTest.c \
-serial/serial.c \
-regtest.c \
-$(SOURCE_DIR)/tasks.c \
-$(SOURCE_DIR)/queue.c \
-$(SOURCE_DIR)/list.c \
+$(SOURCE_DIR)/Arduino_FreeRTOS.h \
+$(SOURCE_DIR)/FreeRTOSCongig.h \
+$(SOURCE_DIR)/FreeRTOSVariant.h \
 $(SOURCE_DIR)/croutine.c \
-$(SOURCE_DIR)/portable/MemMang/heap_1.c \
-$(PORT_DIR)/port.c \
-$(DEMO_DIR)/crflash.c \
-$(DEMO_DIR)/integer.c \
-$(DEMO_DIR)/PollQ.c \
-$(DEMO_DIR)/comtest.c
-
+$(SOURCE_DIR)/croutine.h \
+$(SOURCE_DIR)/event_groups.c \
+$(SOURCE_DIR)/event_groups.h \
+$(SOURCE_DIR)/heap_3.c \
+$(SOURCE_DIR)/message_buffer.h \
+$(SOURCE_DIR)/mpu_wrappers.h \
+$(SOURCE_DIR)/port.c \
+$(SOURCE_DIR)/portable.h \
+$(SOURCE_DIR)/postmacro.h \
+$(SOURCE_DIR)/projdefs.h \
+$(SOURCE_DIR)/queue.c \
+$(SOURCE_DIR)/queue.h \
+$(SOURCE_DIR)/list.c \
+$(SOURCE_DIR)/list.h \
+$(SOURCE_DIR)/semphr.h \
+$(SOURCE_DIR)/stack_macros.h \
+$(SOURCE_DIR)/steam_buffer.c \
+$(SOURCE_DIR)/steam_buffer.h \
+$(SOURCE_DIR)/task.h \
+$(SOURCE_DIR)/tasks.c \
+$(SOURCE_DIR)/timers.c \
+$(SOURCE_DIR)/timers.h \
+$(SOURCE_DIR)/variantHooks.cpp \
 
 # If there is more than one source file, append them above, or modify and
 # uncomment the following:
@@ -99,7 +111,7 @@ EXTRAINCDIRS =
 #  -Wa,...:   tell GCC to pass this to the assembler.
 #    -ahlms:  create assembler listing
 
-DEBUG_LEVEL=-g
+DEBUG_LEVEL = -g
 WARNINGS=-Wall -Wextra -Wshadow -Wpointer-arith -Wbad-function-cast -Wcast-align -Wsign-compare \
 		-Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wunused
 
