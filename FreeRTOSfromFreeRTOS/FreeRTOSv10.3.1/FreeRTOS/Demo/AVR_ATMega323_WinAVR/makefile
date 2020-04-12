@@ -49,7 +49,7 @@ DEMO_DIR = ../Common/Minimal
 SOURCE_DIR = ../../Source
 PORT_DIR = ../../Source/portable/GCC/ATMega323
 
-SRC	= \
+SRC= \
 main.c \
 ParTest/ParTest.c \
 serial/serial.c \
@@ -59,11 +59,11 @@ $(SOURCE_DIR)/queue.c \
 $(SOURCE_DIR)/list.c \
 $(SOURCE_DIR)/croutine.c \
 $(SOURCE_DIR)/portable/MemMang/heap_1.c \
-$(PORT_DIR)/port.c \
 $(DEMO_DIR)/crflash.c \
 $(DEMO_DIR)/integer.c \
 $(DEMO_DIR)/PollQ.c \
-$(DEMO_DIR)/comtest.c
+$(DEMO_DIR)/comtest.c \
+$(PORT_DIR)/port.c 
 
 
 # If there is more than one source file, append them above, or modify and
@@ -88,7 +88,7 @@ ASRC =
 
 # List any extra directories to look for include files here.
 #     Each directory must be seperated by a space.
-EXTRAINCDIRS = 
+EXTRAINCDIRS = . ../../Source/include ../Common/include ../../Source/portable/GCC/ATMega323
 
 
 # Optional compiler flags.
@@ -103,7 +103,7 @@ DEBUG_LEVEL=-g
 WARNINGS=-Wall -Wextra -Wshadow -Wpointer-arith -Wbad-function-cast -Wcast-align -Wsign-compare \
 		-Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wunused
 
-CFLAGS = -D GCC_MEGA_AVR -I. -I../../Source/include -I../Common/include  \
+CFLAGS = -D GCC_MEGA_AVR  \
 $(DEBUG_LEVEL) -O$(OPT) \
 -fsigned-char -funsigned-bitfields -fpack-struct -fshort-enums \
 $(WARNINGS) \
@@ -162,10 +162,10 @@ LDFLAGS += -lm
 # Type: avrdude -c ?
 # to get a full listing.
 #
-AVRDUDE_PROGRAMMER = stk500
+AVRDUDE_PROGRAMMER = arduino
 
 
-AVRDUDE_PORT = tryACM0	   # programmer connected to serial device
+AVRDUDE_PORT = /dev/ttyACM0	   # programmer connected to serial device
 #AVRDUDE_PORT = lpt1	# programmer connected to parallel port
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
