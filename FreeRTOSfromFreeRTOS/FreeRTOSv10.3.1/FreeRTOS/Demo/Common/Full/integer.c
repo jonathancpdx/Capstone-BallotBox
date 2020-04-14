@@ -103,7 +103,7 @@ const char * const pcTaskStartMsg = "Integer math task 1 started.\r\n";
 const char * const pcTaskFailMsg = "Integer math task 1 failed.\r\n";
 
 	/* Queue a message for printing to say the task has started. */
-	vPrintDisplayMessage( &pcTaskStartMsg );
+	( &pcTaskStartMsg );
 
 	/* The variable this task increments to show it is still running is passed in
 	as the parameter. */
