@@ -110,13 +110,13 @@ tasks just use the idle priority. */
 
 /* LED used by the serial port tasks.  This is toggled on each character Tx,
 and mainCOM_TEST_LED + 1 is toggles on each character Rx. */
-#define mainCOM_TEST_LED				( 4 )
+#define mainCOM_TEST_LED				( 1 )
 
 /* LED that is toggled by the check task.  The check task periodically checks
 that all the other tasks are operating without error.  If no errors are found
 the LED is toggled.  If an error is found at any time the LED is never toggles
 again. */
-#define mainCHECK_TASK_LED				( 7 )
+#define mainCHECK_TASK_LED				( 1 )
 
 /* The period between executions of the check task. */
 #define mainCHECK_PERIOD				( ( TickType_t ) 3000 / portTICK_PERIOD_MS  )
