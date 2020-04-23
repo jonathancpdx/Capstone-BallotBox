@@ -106,17 +106,20 @@ tasks just use the idle priority. */
 #define mainCHECK_TASK_PRIORITY			( tskIDLE_PRIORITY + 3 )
 
 /* Baud rate used by the serial port tasks. */
-#define mainCOM_TEST_BAUD_RATE			( ( unsigned long ) 38400 )
+#define mainCOM_TEST_BAUD_RATE			( ( unsigned long ) 9600 )
 
 /* LED used by the serial port tasks.  This is toggled on each character Tx,
 and mainCOM_TEST_LED + 1 is toggles on each character Rx. */
 #define mainCOM_TEST_LED				( 4 )
 
+//////////////////////////////////////
 /* LED that is toggled by the check task.  The check task periodically checks
 that all the other tasks are operating without error.  If no errors are found
 the LED is toggled.  If an error is found at any time the LED is never toggles
-again. */
+again. 
 #define mainCHECK_TASK_LED				( 7 )
+*/
+//////////////////////////////////////
 
 /* The period between executions of the check task. */
 #define mainCHECK_PERIOD				( ( TickType_t ) 3000 / portTICK_PERIOD_MS  )
@@ -231,7 +234,7 @@ static portBASE_TYPE xErrorHasOccurred = pdFALSE;
 	{
 		/* Toggle the LED if everything is okay so we know if an error occurs even if not
 		using console IO. */
-		vParTestToggleLED( mainCHECK_TASK_LED );
+		vParTestToggleLED(/* mainCHECK_TASK_LED */);
 	}
 }
 /*-----------------------------------------------------------*/
