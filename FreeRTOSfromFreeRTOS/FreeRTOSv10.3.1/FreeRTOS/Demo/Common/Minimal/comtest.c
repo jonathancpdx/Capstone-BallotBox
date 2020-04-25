@@ -141,7 +141,7 @@ TickType_t xTimeToWait;
 		{
 			if( xSerialPutChar( xPort, cByteToSend, comNO_BLOCK ) == pdPASS )
 			{
-				vParTestToggleLED( uxBaseLED + comTX_LED_OFFSET );
+				vParTestToggleLED();
 			}
 		}
 
@@ -190,7 +190,7 @@ BaseType_t xResyncRequired = pdFALSE, xErrorOccurred = pdFALSE;
 				until the expected character sequence is about to restart. */
 				if( cByteRxed == cExpectedByte )
 				{
-					vParTestToggleLED( uxBaseLED + comRX_LED_OFFSET );
+					vParTestToggleLED();
 				}
 				else
 				{

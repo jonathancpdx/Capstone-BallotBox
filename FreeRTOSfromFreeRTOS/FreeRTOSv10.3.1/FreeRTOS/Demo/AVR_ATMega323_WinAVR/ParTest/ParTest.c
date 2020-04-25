@@ -94,8 +94,7 @@ unsigned char ucBit = ( unsigned char ) 1;
 	}
 }
 /*-----------------------------------------------------------*/
-
-void vParTestToggleLED(void)
+void vParTestToggleLED()
 {
 	vTaskSuspendAll();
 	{
