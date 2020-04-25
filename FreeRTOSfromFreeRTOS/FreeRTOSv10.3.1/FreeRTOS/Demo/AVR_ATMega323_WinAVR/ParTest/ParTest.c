@@ -37,9 +37,14 @@ Changes from V2.6.0
 	  WinAVR.
 */
 
+#ifndef F_CPU
+#define F_CPU 16000000UL
+#endif
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "partest.h"
+#include <util/delay.h>
 
 /*-----------------------------------------------------------
  * Simple parallel port IO routines.
@@ -47,7 +52,7 @@ Changes from V2.6.0
 
 #define partstALL_BITS_OUTPUT			( ( unsigned char ) 0xff )
 #define partstALL_OUTPUTS_OFF			( ( unsigned char ) 0xff )
-#define partstMAX_OUTPUT_LED			( ( unsigned char ) 7 )
+#define partstMAX_OUTPUT_LED			( ( unsigned char ) 1 )
 
 static volatile unsigned char ucCurrentOutputValue = partstALL_OUTPUTS_OFF; /*lint !e956 File scope parameters okay here. */
 
@@ -90,7 +95,7 @@ unsigned char ucBit = ( unsigned char ) 1;
 }
 /*-----------------------------------------------------------*/
 
-void vParTestToggleLED()
+void vParTestToggleLED(void)
 {
 	vTaskSuspendAll();
 	{
@@ -105,5 +110,4 @@ void vParTestToggleLED()
 	}
 	xTaskResumeAll();			
 }
-
 
