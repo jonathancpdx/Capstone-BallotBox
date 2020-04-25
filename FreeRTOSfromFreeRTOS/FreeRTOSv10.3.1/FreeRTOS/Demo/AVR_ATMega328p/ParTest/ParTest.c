@@ -88,31 +88,23 @@ unsigned char ucBit = ( unsigned char ) 1;
 		xTaskResumeAll();
 	}
 }
+
 /*-----------------------------------------------------------*/
 
-void vParTestToggleLED( unsigned portBASE_TYPE uxLED )
+void vParTestToggleLED()
 {
-unsigned char ucBit;
+        vTaskSuspendAll();
+        {
+                for (;;)
+                {
+                        PORTB = 0b00100000;
+                        _delay_ms(500);
+                        PORTB = 0b00000000;
+                        _delay_ms(500);
 
-	if( uxLED <= partstMAX_OUTPUT_LED )
-	{
-		ucBit = ( ( unsigned char ) 1 ) << uxLED;
-
-		vTaskSuspendAll();
-		{
-			if( ucCurrentOutputValue & ucBit )
-			{
-				ucCurrentOutputValue &= ~ucBit;
-			}
-			else
-			{
-				ucCurrentOutputValue |= ucBit;
-			}
-
-			PORTB = ucCurrentOutputValue;
-		}
-		xTaskResumeAll();			
-	}
+                }
+        }
+        xTaskResumeAll();
 }
 
 
