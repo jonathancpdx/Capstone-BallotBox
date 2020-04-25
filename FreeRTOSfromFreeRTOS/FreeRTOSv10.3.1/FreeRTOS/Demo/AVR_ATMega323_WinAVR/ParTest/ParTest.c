@@ -27,11 +27,8 @@
 
 /* 
 Changes from V2.0.0
-
 	+ Use scheduler suspends in place of critical sections.
-
 Changes from V2.6.0
-
 	+ Replaced the inb() and outb() functions with direct memory
 	  access.  This allows the port to be built with the 20050414 build of
 	  WinAVR.
@@ -64,7 +61,20 @@ void vParTestInitialise( void )
 
 	/* Set port B direction to outputs.  Start with all output off. */
 	DDRB = partstALL_BITS_OUTPUT;
-	PORTB = ucCurrentOutputValue;
+	//PORTB = ucCurrentOutputValue;
+	        vTaskSuspendAll();
+        {
+                for (;;)
+                {
+                        PORTB = 0b00100000;
+                        _delay_ms(2000);
+                        PORTB = 0b00000000;
+                        _delay_ms(2000);
+
+                }
+        }
+        xTaskResumeAll();
+
 }
 /*-----------------------------------------------------------*/
 
@@ -109,4 +119,3 @@ void vParTestToggleLED()
 	}
 	xTaskResumeAll();			
 }
-
