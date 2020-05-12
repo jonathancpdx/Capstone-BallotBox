@@ -6,7 +6,7 @@ PEEK_POKE_SERVER    = no
 USE_RTC_CLOCK       = 0
 VOTING_SYSTEM_DEBUG = yes
 USE_CLI_TASK        = yes
-SIMULATION 	    = no
+# SIMULATION 	    = no
 AXI_DEBUG_PRINT     = no
 NETWORK_LOG_DEBUG   = no
 DISABLE_NETWORK     = no
@@ -20,15 +20,16 @@ export OS_DIR  = $(SOURCE_DIR)/os/freertos
 CFLAGS += -DVOTING_PLATFORM_FREERTOS
 
 ARCH		= -mmcu=atmega328p
-ABI		= 
+# Need to do research to figure out what ABI is needed
+# ABI		= 
 TARGET  	= --target=ihex
 
 ARCHTARGET=riscv64-unknown-elf
 
+CC = avr-gcc
+
 # Default to GCC
 USE_CLANG ?= no
-
-USE_LED_BLINK_TASK ?= 0
 
 # Decide which compiler to use
 ifeq ($(USE_CLANG),yes)
