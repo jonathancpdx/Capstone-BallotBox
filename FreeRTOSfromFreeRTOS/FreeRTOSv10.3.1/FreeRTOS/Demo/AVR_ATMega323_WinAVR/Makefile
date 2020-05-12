@@ -242,7 +242,6 @@ MSG_CLEANING = Cleaning project:
 
 
 
-
 # Define all object files.
 OBJ = $(SRC:.c=.o) $(ASRC:.S=.o) 
 

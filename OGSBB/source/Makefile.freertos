@@ -1,14 +1,17 @@
 # Set defaults
-NETWORK_LOGS        ?= no
-FS_LOGS             ?= yes
-FS_TYPE             ?= FAT
-PEEK_POKE_SERVER    ?= no
-USE_RTC_CLOCK       ?= yes
-VOTING_SYSTEM_DEBUG ?= no
-USE_CLI_TASK        ?= no
-AXI_DEBUG_PRINT     ?= no
-NETWORK_LOG_DEBUG   ?= no
-DISABLE_NETWORK     ?= yes
+NETWORK_LOGS        = no
+FS_LOGS             = no
+FS_TYPE             = FAT
+PEEK_POKE_SERVER    = no
+USE_RTC_CLOCK       = 0
+VOTING_SYSTEM_DEBUG = yes
+USE_CLI_TASK        = yes
+SIMULATION 	    = no
+AXI_DEBUG_PRINT     = no
+NETWORK_LOG_DEBUG   = no
+DISABLE_NETWORK     = no
+USE_LED_BLINK_TASK  = 1
+USE_AVR 	    = yes 
 
 # Voting System Definitions
 include Makefile.common
@@ -16,8 +19,9 @@ include Makefile.common
 export OS_DIR  = $(SOURCE_DIR)/os/freertos
 CFLAGS += -DVOTING_PLATFORM_FREERTOS
 
-ARCH		= -march=rv32im
-ABI		= -mabi=ilp32
+ARCH		= -mmcu=atmega328p
+ABI		= 
+TARGET  	= --target=ihex
 
 ARCHTARGET=riscv64-unknown-elf
 
@@ -30,24 +34,24 @@ USE_LED_BLINK_TASK ?= 0
 ifeq ($(USE_CLANG),yes)
 export CC		= clang --target=riscv32
 # FIXME: clang doesn't support C++ compilation at the moment
-#export CPP		= clang --target=riscv32
-export CPP		= $(ARCHTARGET)-g++
+#export CPP	= clang --target=riscv32
+export CPP	= $(ARCHTARGET)-g++
 # LLVM doesn't support linking RISC-V files yet,
 # so we have to use GCC linker to do so	
-export GCC		= $(ARCHTARGET)-gcc
+export GCC	= $(ARCHTARGET)-gcc
 export OBJCOPY	= llvm-objcopy
 # LLVM doesn't uderstand debug symbols created by GCC linker
 # using GCC objdump for the time being (instead of llvm-objdump)
 export OBJDUMP	= $(ARCHTARGET)-objdump
-export AR		= llvm-ar
+export AR	= llvm-ar
 export RANLIB	= llvm-ranlib
 else
-export CC		= $(ARCHTARGET)-gcc
-export CPP		= $(ARCHTARGET)-g++
-export GCC		= $(CC)
+export CC	= $(ARCHTARGET)-gcc
+export CPP	= $(ARCHTARGET)-g++
+export GCC	= $(CC)
 export OBJCOPY	= $(ARCHTARGET)-objcopy
 export OBJDUMP	= $(ARCHTARGET)-objdump
-export AR		= $(ARCHTARGET)-ar
+export AR	= $(ARCHTARGET)-ar
 export RANLIB	= $(ARCHTARGET)-ranlib
 export COMPILER_FLAGS = -mcmodel=medany
 # TODO: Use -Werror only for GCC now
