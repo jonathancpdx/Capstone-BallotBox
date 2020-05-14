@@ -6,7 +6,7 @@ PEEK_POKE_SERVER    = no
 USE_RTC_CLOCK       = 0
 VOTING_SYSTEM_DEBUG = yes
 USE_CLI_TASK        = yes
-# SIMULATION 	    = no
+SIMULATION 	    = no
 AXI_DEBUG_PRINT     = no
 NETWORK_LOG_DEBUG   = no
 DISABLE_NETWORK     = no
@@ -21,14 +21,12 @@ CFLAGS += -DVOTING_PLATFORM_FREERTOS
 
 ARCH		= -mmcu=atmega328p
 # Need to do research to figure out what ABI is needed
-# ABI		= 
+ABI		=  avr-gcc
 TARGET  	= --target=ihex
 
-ARCHTARGET=riscv64-unknown-elf
+ARCHTARGET=riscv64-unkown-elf
 
-CC = avr-gcc
-
-# Default to GCC
+# Default to GCC, we dont use clang
 USE_CLANG ?= no
 
 # Decide which compiler to use
@@ -61,11 +59,8 @@ endif
 
 SOURCE_BASE_DIR = $(SOURCE_DIR)
 INCLUDE_BASE_DIR = $(SOURCE_DIR)/include
-FREERTOS_BASE_DIR = ../FreeRTOS-mirror
-export FREERTOS_DEMO_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS/Demo/RISC-V_Galois_P1
-
-export CRT0 = $(FREERTOS_DEMO_DIR)/bsp/boot.S
-
+FREERTOS_BASE_DIR = ../FreeRTOSfromFreeRTOS/FreeRTOSv10.3.1/ 
+export FREERTOS_DEMO_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS/Demo/Common/Minimal
 export SBB_SOURCE_DIR = $(SOURCE_BASE_DIR)/sbb
 export LOG_SOURCE_DIR = $(SOURCE_BASE_DIR)/logging
 export CRYPTO_SOURCE_DIR = $(SOURCE_BASE_DIR)/crypto
@@ -74,8 +69,8 @@ export LOG_INCLUDE_DIR = $(INCLUDE_BASE_DIR)/logging
 export CRYPTO_INCLUDE_DIR = $(INCLUDE_BASE_DIR)/crypto
 export OS_INCLUDE_DIR = $(INCLUDE_BASE_DIR)/os/freertos
 FREERTOS_SOURCE_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS/Source
-FREERTOS_PLUS_SOURCE_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS-Plus/Source
-FREERTOS_TCP_SOURCE_DIR = $(FREERTOS_PLUS_SOURCE_DIR)/FreeRTOS-Plus-TCP
+# FREERTOS_PLUS_SOURCE_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS-Plus/Source we dont use this/dont have it 
+# FREERTOS_TCP_SOURCE_DIR = $(FREERTOS_PLUS_SOURCE_DIR)/FreeRTOS-Plus-TCP we dont use this/dont have it
 export FREERTOS_PROTOCOLS_DIR = $(SOURCE_BASE_DIR)/protocols
 
 WARNINGS = $(WERROR) -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align -Wsign-compare \
@@ -83,17 +78,34 @@ WARNINGS = $(WERROR) -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align -Wsign-
  
 C_WARNINGS = -Wbad-function-cast -Wmissing-prototypes -Wstrict-prototypes
 
-export FREERTOS_SRC = \
-	$(FREERTOS_SOURCE_DIR)/croutine.c \
-	$(FREERTOS_SOURCE_DIR)/list.c \
-	$(FREERTOS_SOURCE_DIR)/queue.c \
-	$(FREERTOS_SOURCE_DIR)/tasks.c \
-	$(FREERTOS_SOURCE_DIR)/timers.c \
-	$(FREERTOS_SOURCE_DIR)/event_groups.c \
-	$(FREERTOS_SOURCE_DIR)/stream_buffer.c \
-	$(FREERTOS_SOURCE_DIR)/portable/MemMang/heap_4.c
+export SRC = \
+$(FREERTOS_BASE_DIR)/FreeRTOS/Demo//AVR_ATMega323_WinAVR/main.c \
+$(FREERTOS_BASE_DIR)/FreeRTOS/Demo//AVR_ATMega323_WinAVR/ParTest/ParTest.c \
+$(FREERTOS_BASE_DIR)/FreeRTOS/Demo//AVR_ATMega323_WinAVR/serial/serial.c \
+$(FREERTOS_BASE_DIR)/FreeRTOS/Demo//AVR_ATMega323_WinAVR/regtest.c \
+$(FREERTOS_SOURCE_DIR)/tasks.c \
+$(FREERTOS_SOURCE_DIR)/queue.c \
+$(FREERTOS_SOURCE_DIR)/list.c \
+$(FREERTOS_SOURCE_DIR)/croutine.c \
+$(FREERTOS_SOURCE_DIR)/portable/MemMang/heap_1.c \
+$(FREERTOS_DEMO_DIR)/crflash.c \
+$(FREERTOS_DEMO_DIR)/integer.c \
+$(FREERTOS_DEMO_DIR)/PollQ.c \
+$(FREERTOS_DEMO_DIR)/comtest.c \
+$(FREERTOS_DEMO_DIR)/port.c
 
-export APP_SOURCE_DIR	= $(FREERTOS_DEMO_DIR)/../Common/Minimal
+#	$(FREERTOS_SOURCE_DIR)/croutine.c \
+#	$(FREERTOS_SOURCE_DIR)/list.c \
+#	$(FREERTOS_SOURCE_DIR)/queue.c \
+#	$(FREERTOS_SOURCE_DIR)/tasks.c \
+#	$(FREERTOS_SOURCE_DIR)/timers.c \
+#	$(FREERTOS_SOURCE_DIR)/event_groups.c \
+#	$(FREERTOS_SOURCE_DIR)/stream_buffer.c \
+#	$(FREERTOS_SOURCE_DIR)/portable/MemMang/heap_4.c
+
+
+
+# export APP_SOURCE_DIR	= $(FREERTOS_DEMO_DIR)/../Common/Minimal not 100% what this for because I changed this to FREETOS_DEMO_DIR
 
 export PORT_SRC = $(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V/port.c
 export PORT_ASM = $(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V/portASM.S
@@ -217,7 +229,7 @@ OS_SRC = $(OS_DIR)/time.c \
          $(OS_DIR)/debug_io.c \
          $(OS_DIR)/sbb_tcp.c \
          $(OS_DIR)/fetch_key.c \
-         main_freertos.c
+         main.c
 
 ifeq ($(NETWORK_LOGS),yes)
   export OS_SRC += $(OS_DIR)/log_net_osd.c
