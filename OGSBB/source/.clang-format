@@ -1,6 +1,0 @@
-BasedOnStyle:   LLVM
-Language:       Cpp
-ReflowComments: false
-BreakBeforeBraces: Allman
-IndentWidth: 4
-

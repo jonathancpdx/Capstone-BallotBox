@@ -1,0 +1,552 @@
+   1               		.file	"comtest.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   9               		.text
+  10               	.Ltext0:
+ 197               	vComRxTask:
+ 198               		.stabd	46,0,0
+   1:../Common/Minimal/comtest.c **** /*
+   2:../Common/Minimal/comtest.c ****  * FreeRTOS Kernel V10.3.1
+   3:../Common/Minimal/comtest.c ****  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+   4:../Common/Minimal/comtest.c ****  *
+   5:../Common/Minimal/comtest.c ****  * Permission is hereby granted, free of charge, to any person obtaining a copy of
+   6:../Common/Minimal/comtest.c ****  * this software and associated documentation files (the "Software"), to deal in
+   7:../Common/Minimal/comtest.c ****  * the Software without restriction, including without limitation the rights to
+   8:../Common/Minimal/comtest.c ****  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+   9:../Common/Minimal/comtest.c ****  * the Software, and to permit persons to whom the Software is furnished to do so,
+  10:../Common/Minimal/comtest.c ****  * subject to the following conditions:
+  11:../Common/Minimal/comtest.c ****  *
+  12:../Common/Minimal/comtest.c ****  * The above copyright notice and this permission notice shall be included in all
+  13:../Common/Minimal/comtest.c ****  * copies or substantial portions of the Software.
+  14:../Common/Minimal/comtest.c ****  *
+  15:../Common/Minimal/comtest.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  16:../Common/Minimal/comtest.c ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  17:../Common/Minimal/comtest.c ****  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  18:../Common/Minimal/comtest.c ****  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  19:../Common/Minimal/comtest.c ****  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  20:../Common/Minimal/comtest.c ****  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  21:../Common/Minimal/comtest.c ****  *
+  22:../Common/Minimal/comtest.c ****  * http://www.FreeRTOS.org
+  23:../Common/Minimal/comtest.c ****  * http://aws.amazon.com/freertos
+  24:../Common/Minimal/comtest.c ****  *
+  25:../Common/Minimal/comtest.c ****  * 1 tab == 4 spaces!
+  26:../Common/Minimal/comtest.c ****  */
+  27:../Common/Minimal/comtest.c **** 
+  28:../Common/Minimal/comtest.c **** 
+  29:../Common/Minimal/comtest.c **** /*
+  30:../Common/Minimal/comtest.c ****  * This version of comtest. c is for use on systems that have limited stack
+  31:../Common/Minimal/comtest.c ****  * space and no display facilities.  The complete version can be found in
+  32:../Common/Minimal/comtest.c ****  * the Demo/Common/Full directory.
+  33:../Common/Minimal/comtest.c ****  *
+  34:../Common/Minimal/comtest.c ****  * Creates two tasks that operate on an interrupt driven serial port.  A
+  35:../Common/Minimal/comtest.c ****  * loopback connector should be used so that everything that is transmitted is
+  36:../Common/Minimal/comtest.c ****  * also received.  The serial port does not use any flow control.  On a
+  37:../Common/Minimal/comtest.c ****  * standard 9way 'D' connector pins two and three should be connected together.
+  38:../Common/Minimal/comtest.c ****  *
+  39:../Common/Minimal/comtest.c ****  * The first task posts a sequence of characters to the Tx queue, toggling an
+  40:../Common/Minimal/comtest.c ****  * LED on each successful post.  At the end of the sequence it sleeps for a
+  41:../Common/Minimal/comtest.c ****  * pseudo-random period before resending the same sequence.
+  42:../Common/Minimal/comtest.c ****  *
+  43:../Common/Minimal/comtest.c ****  * The UART Tx end interrupt is enabled whenever data is available in the Tx
+  44:../Common/Minimal/comtest.c ****  * queue.  The Tx end ISR removes a single character from the Tx queue and
+  45:../Common/Minimal/comtest.c ****  * passes it to the UART for transmission.
+  46:../Common/Minimal/comtest.c ****  *
+  47:../Common/Minimal/comtest.c ****  * The second task blocks on the Rx queue waiting for a character to become
+  48:../Common/Minimal/comtest.c ****  * available.  When the UART Rx end interrupt receives a character it places
+  49:../Common/Minimal/comtest.c ****  * it in the Rx queue, waking the second task.  The second task checks that the
+  50:../Common/Minimal/comtest.c ****  * characters removed from the Rx queue form the same sequence as those posted
+  51:../Common/Minimal/comtest.c ****  * to the Tx queue, and toggles an LED for each correct character.
+  52:../Common/Minimal/comtest.c ****  *
+  53:../Common/Minimal/comtest.c ****  * The receiving task is spawned with a higher priority than the transmitting
+  54:../Common/Minimal/comtest.c ****  * task.  The receiver will therefore wake every time a character is
+  55:../Common/Minimal/comtest.c ****  * transmitted so neither the Tx or Rx queue should ever hold more than a few
+  56:../Common/Minimal/comtest.c ****  * characters.
+  57:../Common/Minimal/comtest.c ****  *
+  58:../Common/Minimal/comtest.c ****  */
+  59:../Common/Minimal/comtest.c **** 
+  60:../Common/Minimal/comtest.c **** /* Scheduler include files. */
+  61:../Common/Minimal/comtest.c **** #include <stdlib.h>
+  62:../Common/Minimal/comtest.c **** #include "FreeRTOS.h"
+  63:../Common/Minimal/comtest.c **** #include "task.h"
+  64:../Common/Minimal/comtest.c **** 
+  65:../Common/Minimal/comtest.c **** /* Demo program include files. */
+  66:../Common/Minimal/comtest.c **** #include "serial.h"
+  67:../Common/Minimal/comtest.c **** #include "comtest.h"
+  68:../Common/Minimal/comtest.c **** #include "partest.h"
+  69:../Common/Minimal/comtest.c **** 
+  70:../Common/Minimal/comtest.c **** #define comSTACK_SIZE				configMINIMAL_STACK_SIZE
+  71:../Common/Minimal/comtest.c **** #define comTX_LED_OFFSET			( 0 )
+  72:../Common/Minimal/comtest.c **** #define comRX_LED_OFFSET			( 1 )
+  73:../Common/Minimal/comtest.c **** #define comTOTAL_PERMISSIBLE_ERRORS ( 2 )
+  74:../Common/Minimal/comtest.c **** 
+  75:../Common/Minimal/comtest.c **** /* The Tx task will transmit the sequence of characters at a pseudo random
+  76:../Common/Minimal/comtest.c **** interval.  This is the maximum and minimum block time between sends. */
+  77:../Common/Minimal/comtest.c **** #define comTX_MAX_BLOCK_TIME		( ( TickType_t ) 0x96 )
+  78:../Common/Minimal/comtest.c **** #define comTX_MIN_BLOCK_TIME		( ( TickType_t ) 0x32 )
+  79:../Common/Minimal/comtest.c **** #define comOFFSET_TIME				( ( TickType_t ) 3 )
+  80:../Common/Minimal/comtest.c **** 
+  81:../Common/Minimal/comtest.c **** /* We should find that each character can be queued for Tx immediately and we
+  82:../Common/Minimal/comtest.c **** don't have to block to send. */
+  83:../Common/Minimal/comtest.c **** #define comNO_BLOCK					( ( TickType_t ) 0 )
+  84:../Common/Minimal/comtest.c **** 
+  85:../Common/Minimal/comtest.c **** /* The Rx task will block on the Rx queue for a long period. */
+  86:../Common/Minimal/comtest.c **** #define comRX_BLOCK_TIME			( ( TickType_t ) 0xffff )
+  87:../Common/Minimal/comtest.c **** 
+  88:../Common/Minimal/comtest.c **** /* The sequence transmitted is from comFIRST_BYTE to and including comLAST_BYTE. */
+  89:../Common/Minimal/comtest.c **** #define comFIRST_BYTE				( 'A' )
+  90:../Common/Minimal/comtest.c **** #define comLAST_BYTE				( 'X' )
+  91:../Common/Minimal/comtest.c **** 
+  92:../Common/Minimal/comtest.c **** #define comBUFFER_LEN				( ( UBaseType_t ) ( comLAST_BYTE - comFIRST_BYTE ) + ( UBaseType_t ) 1 )
+  93:../Common/Minimal/comtest.c **** #define comINITIAL_RX_COUNT_VALUE	( 0 )
+  94:../Common/Minimal/comtest.c **** 
+  95:../Common/Minimal/comtest.c **** /* Handle to the com port used by both tasks. */
+  96:../Common/Minimal/comtest.c **** static xComPortHandle xPort = NULL;
+  97:../Common/Minimal/comtest.c **** 
+  98:../Common/Minimal/comtest.c **** /* The transmit task as described at the top of the file. */
+  99:../Common/Minimal/comtest.c **** static portTASK_FUNCTION_PROTO( vComTxTask, pvParameters );
+ 100:../Common/Minimal/comtest.c **** 
+ 101:../Common/Minimal/comtest.c **** /* The receive task as described at the top of the file. */
+ 102:../Common/Minimal/comtest.c **** static portTASK_FUNCTION_PROTO( vComRxTask, pvParameters );
+ 103:../Common/Minimal/comtest.c **** 
+ 104:../Common/Minimal/comtest.c **** /* The LED that should be toggled by the Rx and Tx tasks.  The Rx task will
+ 105:../Common/Minimal/comtest.c **** toggle LED ( uxBaseLED + comRX_LED_OFFSET).  The Tx task will toggle LED
+ 106:../Common/Minimal/comtest.c **** ( uxBaseLED + comTX_LED_OFFSET ). */
+ 107:../Common/Minimal/comtest.c **** static UBaseType_t uxBaseLED = 0;
+ 108:../Common/Minimal/comtest.c **** 
+ 109:../Common/Minimal/comtest.c **** /* Check variable used to ensure no error have occurred.  The Rx task will
+ 110:../Common/Minimal/comtest.c **** increment this variable after every successfully received sequence.  If at any
+ 111:../Common/Minimal/comtest.c **** time the sequence is incorrect the the variable will stop being incremented. */
+ 112:../Common/Minimal/comtest.c **** static volatile UBaseType_t uxRxLoops = comINITIAL_RX_COUNT_VALUE;
+ 113:../Common/Minimal/comtest.c **** 
+ 114:../Common/Minimal/comtest.c **** /*-----------------------------------------------------------*/
+ 115:../Common/Minimal/comtest.c **** 
+ 116:../Common/Minimal/comtest.c **** void vAltStartComTestTasks( UBaseType_t uxPriority, uint32_t ulBaudRate, UBaseType_t uxLED )
+ 117:../Common/Minimal/comtest.c **** {
+ 118:../Common/Minimal/comtest.c **** 	/* Initialise the com port then spawn the Rx and Tx tasks. */
+ 119:../Common/Minimal/comtest.c **** 	uxBaseLED = uxLED;
+ 120:../Common/Minimal/comtest.c **** 	xSerialPortInitMinimal( ulBaudRate, comBUFFER_LEN );
+ 121:../Common/Minimal/comtest.c **** 
+ 122:../Common/Minimal/comtest.c **** 	/* The Tx task is spawned with a lower priority than the Rx task. */
+ 123:../Common/Minimal/comtest.c **** 	xTaskCreate( vComTxTask, "COMTx", comSTACK_SIZE, NULL, uxPriority - 1, ( TaskHandle_t * ) NULL );
+ 124:../Common/Minimal/comtest.c **** 	xTaskCreate( vComRxTask, "COMRx", comSTACK_SIZE, NULL, uxPriority, ( TaskHandle_t * ) NULL );
+ 125:../Common/Minimal/comtest.c **** }
+ 126:../Common/Minimal/comtest.c **** /*-----------------------------------------------------------*/
+ 127:../Common/Minimal/comtest.c **** 
+ 128:../Common/Minimal/comtest.c **** static portTASK_FUNCTION( vComTxTask, pvParameters )
+ 129:../Common/Minimal/comtest.c **** {
+ 130:../Common/Minimal/comtest.c **** char cByteToSend;
+ 131:../Common/Minimal/comtest.c **** TickType_t xTimeToWait;
+ 132:../Common/Minimal/comtest.c **** 
+ 133:../Common/Minimal/comtest.c **** 	/* Just to stop compiler warnings. */
+ 134:../Common/Minimal/comtest.c **** 	( void ) pvParameters;
+ 135:../Common/Minimal/comtest.c **** 
+ 136:../Common/Minimal/comtest.c **** 	for( ;; )
+ 137:../Common/Minimal/comtest.c **** 	{
+ 138:../Common/Minimal/comtest.c **** 		/* Simply transmit a sequence of characters from comFIRST_BYTE to
+ 139:../Common/Minimal/comtest.c **** 		comLAST_BYTE. */
+ 140:../Common/Minimal/comtest.c **** 		for( cByteToSend = comFIRST_BYTE; cByteToSend <= comLAST_BYTE; cByteToSend++ )
+ 141:../Common/Minimal/comtest.c **** 		{
+ 142:../Common/Minimal/comtest.c **** 			if( xSerialPutChar( xPort, cByteToSend, comNO_BLOCK ) == pdPASS )
+ 143:../Common/Minimal/comtest.c **** 			{
+ 144:../Common/Minimal/comtest.c **** 				vParTestToggleLED();
+ 145:../Common/Minimal/comtest.c **** 			}
+ 146:../Common/Minimal/comtest.c **** 		}
+ 147:../Common/Minimal/comtest.c **** 
+ 148:../Common/Minimal/comtest.c **** 		/* Turn the LED off while we are not doing anything. */
+ 149:../Common/Minimal/comtest.c **** 		vParTestSetLED( uxBaseLED + comTX_LED_OFFSET, pdFALSE );
+ 150:../Common/Minimal/comtest.c **** 
+ 151:../Common/Minimal/comtest.c **** 		/* We have posted all the characters in the string - wait before
+ 152:../Common/Minimal/comtest.c **** 		re-sending.  Wait a pseudo-random time as this will provide a better
+ 153:../Common/Minimal/comtest.c **** 		test. */
+ 154:../Common/Minimal/comtest.c **** 		xTimeToWait = xTaskGetTickCount() + comOFFSET_TIME;
+ 155:../Common/Minimal/comtest.c **** 
+ 156:../Common/Minimal/comtest.c **** 		/* Make sure we don't wait too long... */
+ 157:../Common/Minimal/comtest.c **** 		xTimeToWait %= comTX_MAX_BLOCK_TIME;
+ 158:../Common/Minimal/comtest.c **** 
+ 159:../Common/Minimal/comtest.c **** 		/* ...but we do want to wait. */
+ 160:../Common/Minimal/comtest.c **** 		if( xTimeToWait < comTX_MIN_BLOCK_TIME )
+ 161:../Common/Minimal/comtest.c **** 		{
+ 162:../Common/Minimal/comtest.c **** 			xTimeToWait = comTX_MIN_BLOCK_TIME;
+ 163:../Common/Minimal/comtest.c **** 		}
+ 164:../Common/Minimal/comtest.c **** 
+ 165:../Common/Minimal/comtest.c **** 		vTaskDelay( xTimeToWait );
+ 166:../Common/Minimal/comtest.c **** 	}
+ 167:../Common/Minimal/comtest.c **** } /*lint !e715 !e818 pvParameters is required for a task function even if it is not referenced. */
+ 168:../Common/Minimal/comtest.c **** /*-----------------------------------------------------------*/
+ 169:../Common/Minimal/comtest.c **** 
+ 170:../Common/Minimal/comtest.c **** static portTASK_FUNCTION( vComRxTask, pvParameters )
+ 171:../Common/Minimal/comtest.c **** {
+ 200               	.LM0:
+ 201               	.LFBB1:
+ 202 0000 CF93      		push r28
+ 203 0002 DF93      		push r29
+ 204 0004 1F92      		push __zero_reg__
+ 205 0006 CDB7      		in r28,__SP_L__
+ 206 0008 DEB7      		in r29,__SP_H__
+ 207               	/* prologue: function */
+ 208               	/* frame size = 1 */
+ 209               	/* stack size = 3 */
+ 210               	.L__stack_usage = 3
+ 172:../Common/Minimal/comtest.c **** signed char cExpectedByte, cByteRxed;
+ 173:../Common/Minimal/comtest.c **** BaseType_t xResyncRequired = pdFALSE, xErrorOccurred = pdFALSE;
+ 212               	.LM1:
+ 213 000a 00E0      		ldi r16,0
+ 214               	.L2:
+ 174:../Common/Minimal/comtest.c **** 
+ 175:../Common/Minimal/comtest.c **** 	/* Just to stop compiler warnings. */
+ 176:../Common/Minimal/comtest.c **** 	( void ) pvParameters;
+ 177:../Common/Minimal/comtest.c **** 
+ 178:../Common/Minimal/comtest.c **** 	for( ;; )
+ 179:../Common/Minimal/comtest.c **** 	{
+ 180:../Common/Minimal/comtest.c **** 		/* We expect to receive the characters from comFIRST_BYTE to
+ 181:../Common/Minimal/comtest.c **** 		comLAST_BYTE in an incrementing order.  Loop to receive each byte. */
+ 182:../Common/Minimal/comtest.c **** 		for( cExpectedByte = comFIRST_BYTE; cExpectedByte <= comLAST_BYTE; cExpectedByte++ )
+ 216               	.LM2:
+ 217 000c 11E4      		ldi r17,lo8(65)
+ 218               	.L5:
+ 183:../Common/Minimal/comtest.c **** 		{
+ 184:../Common/Minimal/comtest.c **** 			/* Block on the queue that contains received bytes until a byte is
+ 185:../Common/Minimal/comtest.c **** 			available. */
+ 186:../Common/Minimal/comtest.c **** 			if( xSerialGetChar( xPort, &cByteRxed, comRX_BLOCK_TIME ) )
+ 220               	.LM3:
+ 221 000e 4FEF      		ldi r20,lo8(-1)
+ 222 0010 5FEF      		ldi r21,lo8(-1)
+ 223 0012 BE01      		movw r22,r28
+ 224 0014 6F5F      		subi r22,-1
+ 225 0016 7F4F      		sbci r23,-1
+ 226 0018 80E0      		ldi r24,0
+ 227 001a 90E0      		ldi r25,0
+ 228 001c 0E94 0000 		call xSerialGetChar
+ 229 0020 8823      		tst r24
+ 230 0022 01F0      		breq .L3
+ 187:../Common/Minimal/comtest.c **** 			{
+ 188:../Common/Minimal/comtest.c **** 				/* Was this the byte we were expecting?  If so, toggle the LED,
+ 189:../Common/Minimal/comtest.c **** 				otherwise we are out on sync and should break out of the loop
+ 190:../Common/Minimal/comtest.c **** 				until the expected character sequence is about to restart. */
+ 191:../Common/Minimal/comtest.c **** 				if( cByteRxed == cExpectedByte )
+ 232               	.LM4:
+ 233 0024 8981      		ldd r24,Y+1
+ 234 0026 8113      		cpse r24,r17
+ 235 0028 00C0      		rjmp .L10
+ 192:../Common/Minimal/comtest.c **** 				{
+ 193:../Common/Minimal/comtest.c **** 					vParTestToggleLED();
+ 237               	.LM5:
+ 238 002a 0E94 0000 		call vParTestToggleLED
+ 239               	.L3:
+ 240 002e 1F5F      		subi r17,lo8(-(1))
+ 182:../Common/Minimal/comtest.c **** 		{
+ 242               	.LM6:
+ 243 0030 1935      		cpi r17,lo8(89)
+ 244 0032 01F4      		brne .L5
+ 245 0034 10E0      		ldi r17,0
+ 246 0036 00C0      		rjmp .L4
+ 247               	.L10:
+ 194:../Common/Minimal/comtest.c **** 				}
+ 195:../Common/Minimal/comtest.c **** 				else
+ 196:../Common/Minimal/comtest.c **** 				{
+ 197:../Common/Minimal/comtest.c **** 					xResyncRequired = pdTRUE;
+ 249               	.LM7:
+ 250 0038 11E0      		ldi r17,lo8(1)
+ 251               	.L4:
+ 198:../Common/Minimal/comtest.c **** 					break; /*lint !e960 Non-switch break allowed. */
+ 199:../Common/Minimal/comtest.c **** 				}
+ 200:../Common/Minimal/comtest.c **** 			}
+ 201:../Common/Minimal/comtest.c **** 		}
+ 202:../Common/Minimal/comtest.c **** 
+ 203:../Common/Minimal/comtest.c **** 		/* Turn the LED off while we are not doing anything. */
+ 204:../Common/Minimal/comtest.c **** 		vParTestSetLED( uxBaseLED + comRX_LED_OFFSET, pdFALSE );
+ 253               	.LM8:
+ 254 003a 8091 0000 		lds r24,uxBaseLED
+ 255 003e 60E0      		ldi r22,0
+ 256 0040 8F5F      		subi r24,lo8(-(1))
+ 257 0042 0E94 0000 		call vParTestSetLED
+ 205:../Common/Minimal/comtest.c **** 
+ 206:../Common/Minimal/comtest.c **** 		/* Did we break out of the loop because the characters were received in
+ 207:../Common/Minimal/comtest.c **** 		an unexpected order?  If so wait here until the character sequence is
+ 208:../Common/Minimal/comtest.c **** 		about to restart. */
+ 209:../Common/Minimal/comtest.c **** 		if( xResyncRequired == pdTRUE )
+ 259               	.LM9:
+ 260 0046 1130      		cpi r17,lo8(1)
+ 261 0048 01F4      		brne .L17
+ 262               	.L6:
+ 210:../Common/Minimal/comtest.c **** 		{
+ 211:../Common/Minimal/comtest.c **** 			while( cByteRxed != comLAST_BYTE )
+ 264               	.LM10:
+ 265 004a 8981      		ldd r24,Y+1
+ 266 004c 8835      		cpi r24,lo8(88)
+ 267 004e 01F0      		breq .L19
+ 212:../Common/Minimal/comtest.c **** 			{
+ 213:../Common/Minimal/comtest.c **** 				/* Block until the next char is available. */
+ 214:../Common/Minimal/comtest.c **** 				xSerialGetChar( xPort, &cByteRxed, comRX_BLOCK_TIME );
+ 269               	.LM11:
+ 270 0050 4FEF      		ldi r20,lo8(-1)
+ 271 0052 5FEF      		ldi r21,lo8(-1)
+ 272 0054 BE01      		movw r22,r28
+ 273 0056 6F5F      		subi r22,-1
+ 274 0058 7F4F      		sbci r23,-1
+ 275 005a 80E0      		ldi r24,0
+ 276 005c 90E0      		ldi r25,0
+ 277 005e 0E94 0000 		call xSerialGetChar
+ 278 0062 00C0      		rjmp .L6
+ 279               	.L19:
+ 215:../Common/Minimal/comtest.c **** 			}
+ 216:../Common/Minimal/comtest.c **** 
+ 217:../Common/Minimal/comtest.c **** 			/* Note that an error occurred which caused us to have to resync.
+ 218:../Common/Minimal/comtest.c **** 			We use this to stop incrementing the loop counter so
+ 219:../Common/Minimal/comtest.c **** 			sAreComTestTasksStillRunning() will return false - indicating an
+ 220:../Common/Minimal/comtest.c **** 			error. */
+ 221:../Common/Minimal/comtest.c **** 			xErrorOccurred++;
+ 281               	.LM12:
+ 282 0064 0F5F      		subi r16,lo8(-(1))
+ 283 0066 00C0      		rjmp .L2
+ 284               	.L17:
+ 222:../Common/Minimal/comtest.c **** 
+ 223:../Common/Minimal/comtest.c **** 			/* We have now resynced with the Tx task and can continue. */
+ 224:../Common/Minimal/comtest.c **** 			xResyncRequired = pdFALSE;
+ 225:../Common/Minimal/comtest.c **** 		}
+ 226:../Common/Minimal/comtest.c **** 		else
+ 227:../Common/Minimal/comtest.c **** 		{
+ 228:../Common/Minimal/comtest.c **** 			if( xErrorOccurred < comTOTAL_PERMISSIBLE_ERRORS )
+ 286               	.LM13:
+ 287 0068 0230      		cpi r16,lo8(2)
+ 288 006a 04F4      		brge .L2
+ 229:../Common/Minimal/comtest.c **** 			{
+ 230:../Common/Minimal/comtest.c **** 				/* Increment the count of successful loops.  As error
+ 231:../Common/Minimal/comtest.c **** 				occurring (i.e. an unexpected character being received) will
+ 232:../Common/Minimal/comtest.c **** 				prevent this counter being incremented for the rest of the
+ 233:../Common/Minimal/comtest.c **** 				execution.   Don't worry about mutual exclusion on this
+ 234:../Common/Minimal/comtest.c **** 				variable - it doesn't really matter as we just want it
+ 235:../Common/Minimal/comtest.c **** 				to change. */
+ 236:../Common/Minimal/comtest.c **** 				uxRxLoops++;
+ 290               	.LM14:
+ 291 006c 8091 0000 		lds r24,uxRxLoops
+ 292 0070 8F5F      		subi r24,lo8(-(1))
+ 293 0072 8093 0000 		sts uxRxLoops,r24
+ 294 0076 00C0      		rjmp .L2
+ 302               	.Lscope1:
+ 304               		.stabd	78,0,0
+ 308               	vComTxTask:
+ 309               		.stabd	46,0,0
+ 129:../Common/Minimal/comtest.c **** char cByteToSend;
+ 311               	.LM15:
+ 312               	.LFBB2:
+ 313               	/* prologue: function */
+ 314               	/* frame size = 0 */
+ 315               	/* stack size = 0 */
+ 316               	.L__stack_usage = 0
+ 157:../Common/Minimal/comtest.c **** 
+ 318               	.LM16:
+ 319 0078 06E9      		ldi r16,lo8(-106)
+ 320 007a 10E0      		ldi r17,0
+ 321               	.L24:
+ 140:../Common/Minimal/comtest.c **** 		{
+ 323               	.LM17:
+ 324 007c C1E4      		ldi r28,lo8(65)
+ 325               	.L22:
+ 142:../Common/Minimal/comtest.c **** 			{
+ 327               	.LM18:
+ 328 007e 40E0      		ldi r20,0
+ 329 0080 50E0      		ldi r21,0
+ 330 0082 6C2F      		mov r22,r28
+ 331 0084 80E0      		ldi r24,0
+ 332 0086 90E0      		ldi r25,0
+ 333 0088 0E94 0000 		call xSerialPutChar
+ 334 008c 8130      		cpi r24,lo8(1)
+ 335 008e 01F4      		brne .L21
+ 144:../Common/Minimal/comtest.c **** 			}
+ 337               	.LM19:
+ 338 0090 0E94 0000 		call vParTestToggleLED
+ 339               	.L21:
+ 340 0094 CF5F      		subi r28,lo8(-(1))
+ 140:../Common/Minimal/comtest.c **** 		{
+ 342               	.LM20:
+ 343 0096 C935      		cpi r28,lo8(89)
+ 344 0098 01F4      		brne .L22
+ 149:../Common/Minimal/comtest.c **** 
+ 346               	.LM21:
+ 347 009a 60E0      		ldi r22,0
+ 348 009c 8091 0000 		lds r24,uxBaseLED
+ 349 00a0 0E94 0000 		call vParTestSetLED
+ 154:../Common/Minimal/comtest.c **** 
+ 351               	.LM22:
+ 352 00a4 0E94 0000 		call xTaskGetTickCount
+ 353 00a8 0396      		adiw r24,3
+ 157:../Common/Minimal/comtest.c **** 
+ 355               	.LM23:
+ 356 00aa B801      		movw r22,r16
+ 357 00ac 0E94 0000 		call __udivmodhi4
+ 160:../Common/Minimal/comtest.c **** 		{
+ 359               	.LM24:
+ 360 00b0 8233      		cpi r24,50
+ 361 00b2 9105      		cpc r25,__zero_reg__
+ 362 00b4 00F4      		brsh .L23
+ 162:../Common/Minimal/comtest.c **** 		}
+ 364               	.LM25:
+ 365 00b6 82E3      		ldi r24,lo8(50)
+ 366 00b8 90E0      		ldi r25,0
+ 367               	.L23:
+ 165:../Common/Minimal/comtest.c **** 	}
+ 369               	.LM26:
+ 370 00ba 0E94 0000 		call vTaskDelay
+ 166:../Common/Minimal/comtest.c **** } /*lint !e715 !e818 pvParameters is required for a task function even if it is not referenced. */
+ 372               	.LM27:
+ 373 00be 00C0      		rjmp .L24
+ 378               	.Lscope2:
+ 380               		.stabd	78,0,0
+ 381               		.section	.rodata.str1.1,"aMS",@progbits,1
+ 382               	.LC0:
+ 383 0000 434F 4D54 		.string	"COMTx"
+ 383      7800 
+ 384               	.LC1:
+ 385 0006 434F 4D52 		.string	"COMRx"
+ 385      7800 
+ 386               		.text
+ 391               	.global	vAltStartComTestTasks
+ 393               	vAltStartComTestTasks:
+ 394               		.stabd	46,0,0
+ 117:../Common/Minimal/comtest.c **** 	/* Initialise the com port then spawn the Rx and Tx tasks. */
+ 396               	.LM28:
+ 397               	.LFBB3:
+ 398 00c0 EF92      		push r14
+ 399 00c2 FF92      		push r15
+ 400 00c4 0F93      		push r16
+ 401 00c6 CF93      		push r28
+ 402               	/* prologue: function */
+ 403               	/* frame size = 0 */
+ 404               	/* stack size = 4 */
+ 405               	.L__stack_usage = 4
+ 406 00c8 C82F      		mov r28,r24
+ 407 00ca CB01      		movw r24,r22
+ 408 00cc BA01      		movw r22,r20
+ 119:../Common/Minimal/comtest.c **** 	xSerialPortInitMinimal( ulBaudRate, comBUFFER_LEN );
+ 410               	.LM29:
+ 411 00ce 2093 0000 		sts uxBaseLED,r18
+ 120:../Common/Minimal/comtest.c **** 
+ 413               	.LM30:
+ 414 00d2 48E1      		ldi r20,lo8(24)
+ 415 00d4 0E94 0000 		call xSerialPortInitMinimal
+ 123:../Common/Minimal/comtest.c **** 	xTaskCreate( vComRxTask, "COMRx", comSTACK_SIZE, NULL, uxPriority, ( TaskHandle_t * ) NULL );
+ 417               	.LM31:
+ 418 00d8 0FEF      		ldi r16,lo8(-1)
+ 419 00da 0C0F      		add r16,r28
+ 420 00dc E12C      		mov r14,__zero_reg__
+ 421 00de F12C      		mov r15,__zero_reg__
+ 422 00e0 20E0      		ldi r18,0
+ 423 00e2 30E0      		ldi r19,0
+ 424 00e4 45E5      		ldi r20,lo8(85)
+ 425 00e6 50E0      		ldi r21,0
+ 426 00e8 60E0      		ldi r22,lo8(.LC0)
+ 427 00ea 70E0      		ldi r23,hi8(.LC0)
+ 428 00ec 80E0      		ldi r24,lo8(gs(vComTxTask))
+ 429 00ee 90E0      		ldi r25,hi8(gs(vComTxTask))
+ 430 00f0 0E94 0000 		call xTaskCreate
+ 124:../Common/Minimal/comtest.c **** }
+ 432               	.LM32:
+ 433 00f4 0C2F      		mov r16,r28
+ 434 00f6 20E0      		ldi r18,0
+ 435 00f8 30E0      		ldi r19,0
+ 436 00fa 45E5      		ldi r20,lo8(85)
+ 437 00fc 50E0      		ldi r21,0
+ 438 00fe 60E0      		ldi r22,lo8(.LC1)
+ 439 0100 70E0      		ldi r23,hi8(.LC1)
+ 440 0102 80E0      		ldi r24,lo8(gs(vComRxTask))
+ 441 0104 90E0      		ldi r25,hi8(gs(vComRxTask))
+ 442 0106 0E94 0000 		call xTaskCreate
+ 443               	/* epilogue start */
+ 125:../Common/Minimal/comtest.c **** /*-----------------------------------------------------------*/
+ 445               	.LM33:
+ 446 010a CF91      		pop r28
+ 447 010c 0F91      		pop r16
+ 448 010e FF90      		pop r15
+ 449 0110 EF90      		pop r14
+ 450 0112 0895      		ret
+ 452               	.Lscope3:
+ 454               		.stabd	78,0,0
+ 456               	.global	xAreComTestTasksStillRunning
+ 458               	xAreComTestTasksStillRunning:
+ 459               		.stabd	46,0,0
+ 237:../Common/Minimal/comtest.c **** 			}
+ 238:../Common/Minimal/comtest.c **** 		}
+ 239:../Common/Minimal/comtest.c **** 	}
+ 240:../Common/Minimal/comtest.c **** } /*lint !e715 !e818 pvParameters is required for a task function even if it is not referenced. */
+ 241:../Common/Minimal/comtest.c **** /*-----------------------------------------------------------*/
+ 242:../Common/Minimal/comtest.c **** 
+ 243:../Common/Minimal/comtest.c **** BaseType_t xAreComTestTasksStillRunning( void )
+ 244:../Common/Minimal/comtest.c **** {
+ 461               	.LM34:
+ 462               	.LFBB4:
+ 463               	/* prologue: function */
+ 464               	/* frame size = 0 */
+ 465               	/* stack size = 0 */
+ 466               	.L__stack_usage = 0
+ 245:../Common/Minimal/comtest.c **** BaseType_t xReturn;
+ 246:../Common/Minimal/comtest.c **** 
+ 247:../Common/Minimal/comtest.c **** 	/* If the count of successful reception loops has not changed than at
+ 248:../Common/Minimal/comtest.c **** 	some time an error occurred (i.e. a character was received out of sequence)
+ 249:../Common/Minimal/comtest.c **** 	and we will return false. */
+ 250:../Common/Minimal/comtest.c **** 	if( uxRxLoops == comINITIAL_RX_COUNT_VALUE )
+ 468               	.LM35:
+ 469 0114 9091 0000 		lds r25,uxRxLoops
+ 251:../Common/Minimal/comtest.c **** 	{
+ 252:../Common/Minimal/comtest.c **** 		xReturn = pdFALSE;
+ 253:../Common/Minimal/comtest.c **** 	}
+ 254:../Common/Minimal/comtest.c **** 	else
+ 255:../Common/Minimal/comtest.c **** 	{
+ 256:../Common/Minimal/comtest.c **** 		xReturn = pdTRUE;
+ 257:../Common/Minimal/comtest.c **** 	}
+ 258:../Common/Minimal/comtest.c **** 
+ 259:../Common/Minimal/comtest.c **** 	/* Reset the count of successful Rx loops.  When this function is called
+ 260:../Common/Minimal/comtest.c **** 	again we expect this to have been incremented. */
+ 261:../Common/Minimal/comtest.c **** 	uxRxLoops = comINITIAL_RX_COUNT_VALUE;
+ 471               	.LM36:
+ 472 0118 1092 0000 		sts uxRxLoops,__zero_reg__
+ 262:../Common/Minimal/comtest.c **** 
+ 263:../Common/Minimal/comtest.c **** 	return xReturn;
+ 474               	.LM37:
+ 475 011c 81E0      		ldi r24,lo8(1)
+ 476 011e 9111      		cpse r25,__zero_reg__
+ 477 0120 00C0      		rjmp .L28
+ 478 0122 80E0      		ldi r24,0
+ 479               	.L28:
+ 264:../Common/Minimal/comtest.c **** }
+ 481               	.LM38:
+ 482 0124 0895      		ret
+ 484               	.Lscope4:
+ 486               		.stabd	78,0,0
+ 487               		.local	uxRxLoops
+ 488               		.comm	uxRxLoops,1,1
+ 489               		.local	uxBaseLED
+ 490               		.comm	uxBaseLED,1,1
+ 494               	.Letext0:
+ 495               		.ident	"GCC: (GNU) 5.4.0"
+ 496               	.global __do_copy_data
+ 497               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 comtest.c
+     /tmp/ccDX5O48.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccDX5O48.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccDX5O48.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccDX5O48.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccDX5O48.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccDX5O48.s:197    .text:0000000000000000 vComRxTask
+     /tmp/ccDX5O48.s:488    .bss:0000000000000001 uxBaseLED
+                             .bss:0000000000000000 uxRxLoops
+     /tmp/ccDX5O48.s:308    .text:0000000000000078 vComTxTask
+     /tmp/ccDX5O48.s:393    .text:00000000000000c0 vAltStartComTestTasks
+     /tmp/ccDX5O48.s:458    .text:0000000000000114 xAreComTestTasksStillRunning
+
+UNDEFINED SYMBOLS
+xSerialGetChar
+vParTestToggleLED
+vParTestSetLED
+xSerialPutChar
+xTaskGetTickCount
+__udivmodhi4
+vTaskDelay
+xSerialPortInitMinimal
+xTaskCreate
+__do_copy_data
+__do_clear_bss

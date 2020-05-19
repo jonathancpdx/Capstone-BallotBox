@@ -1,0 +1,15 @@
+# Set defaults 
+NETWORK_LOGS        = no
+FS_LOGS             = no
+FS_TYPE             = FAT
+PEEK_POKE_SERVER    = no
+USE_RTC_CLOCK       = 0
+VOTING_SYSTEM_DEBUG = yes
+USE_CLI_TASK        = yes
+AXI_DEBUG_PRINT     = no
+NETWORK_LOG_DEBUG   = no
+DISABLE_NETWORK     = yes
+USE_LED_BLINK_TASK  = 1
+USE_AVR				= yes
+
+include Makefile.freertos_sim

@@ -1,0 +1,386 @@
+   1               		.file	"integer.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   9               		.text
+  10               	.Ltext0:
+ 184               	vCompeteingIntMathTask:
+ 185               		.stabd	46,0,0
+   1:../Common/Minimal/integer.c **** /*
+   2:../Common/Minimal/integer.c ****  * FreeRTOS Kernel V10.3.1
+   3:../Common/Minimal/integer.c ****  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+   4:../Common/Minimal/integer.c ****  *
+   5:../Common/Minimal/integer.c ****  * Permission is hereby granted, free of charge, to any person obtaining a copy of
+   6:../Common/Minimal/integer.c ****  * this software and associated documentation files (the "Software"), to deal in
+   7:../Common/Minimal/integer.c ****  * the Software without restriction, including without limitation the rights to
+   8:../Common/Minimal/integer.c ****  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+   9:../Common/Minimal/integer.c ****  * the Software, and to permit persons to whom the Software is furnished to do so,
+  10:../Common/Minimal/integer.c ****  * subject to the following conditions:
+  11:../Common/Minimal/integer.c ****  *
+  12:../Common/Minimal/integer.c ****  * The above copyright notice and this permission notice shall be included in all
+  13:../Common/Minimal/integer.c ****  * copies or substantial portions of the Software.
+  14:../Common/Minimal/integer.c ****  *
+  15:../Common/Minimal/integer.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  16:../Common/Minimal/integer.c ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  17:../Common/Minimal/integer.c ****  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  18:../Common/Minimal/integer.c ****  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  19:../Common/Minimal/integer.c ****  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  20:../Common/Minimal/integer.c ****  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  21:../Common/Minimal/integer.c ****  *
+  22:../Common/Minimal/integer.c ****  * http://www.FreeRTOS.org
+  23:../Common/Minimal/integer.c ****  * http://aws.amazon.com/freertos
+  24:../Common/Minimal/integer.c ****  *
+  25:../Common/Minimal/integer.c ****  * 1 tab == 4 spaces!
+  26:../Common/Minimal/integer.c ****  */
+  27:../Common/Minimal/integer.c **** 
+  28:../Common/Minimal/integer.c **** /*
+  29:../Common/Minimal/integer.c ****  * Creates one or more tasks that repeatedly perform a set of integer
+  30:../Common/Minimal/integer.c ****  * calculations.  The result of each run-time calculation is compared to the
+  31:../Common/Minimal/integer.c ****  * known expected result - with a mismatch being indicative of an error in the
+  32:../Common/Minimal/integer.c ****  * context switch mechanism.
+  33:../Common/Minimal/integer.c ****  */
+  34:../Common/Minimal/integer.c **** 
+  35:../Common/Minimal/integer.c **** #include <stdlib.h>
+  36:../Common/Minimal/integer.c **** 
+  37:../Common/Minimal/integer.c **** /* Scheduler include files. */
+  38:../Common/Minimal/integer.c **** #include "FreeRTOS.h"
+  39:../Common/Minimal/integer.c **** #include "task.h"
+  40:../Common/Minimal/integer.c **** 
+  41:../Common/Minimal/integer.c **** /* Demo program include files. */
+  42:../Common/Minimal/integer.c **** #include "integer.h"
+  43:../Common/Minimal/integer.c **** 
+  44:../Common/Minimal/integer.c **** /* The constants used in the calculation. */
+  45:../Common/Minimal/integer.c **** #define intgCONST1				( ( long ) 123 )
+  46:../Common/Minimal/integer.c **** #define intgCONST2				( ( long ) 234567 )
+  47:../Common/Minimal/integer.c **** #define intgCONST3				( ( long ) -3 )
+  48:../Common/Minimal/integer.c **** #define intgCONST4				( ( long ) 7 )
+  49:../Common/Minimal/integer.c **** #define intgEXPECTED_ANSWER		( ( ( intgCONST1 + intgCONST2 ) * intgCONST3 ) / intgCONST4 )
+  50:../Common/Minimal/integer.c **** 
+  51:../Common/Minimal/integer.c **** #define intgSTACK_SIZE			configMINIMAL_STACK_SIZE
+  52:../Common/Minimal/integer.c **** 
+  53:../Common/Minimal/integer.c **** /* As this is the minimal version, we will only create one task. */
+  54:../Common/Minimal/integer.c **** #define intgNUMBER_OF_TASKS		( 1 )
+  55:../Common/Minimal/integer.c **** 
+  56:../Common/Minimal/integer.c **** /* The task function.  Repeatedly performs a 32 bit calculation, checking the
+  57:../Common/Minimal/integer.c **** result against the expected result.  If the result is incorrect then the
+  58:../Common/Minimal/integer.c **** context switch must have caused some corruption. */
+  59:../Common/Minimal/integer.c **** static portTASK_FUNCTION_PROTO( vCompeteingIntMathTask, pvParameters );
+  60:../Common/Minimal/integer.c **** 
+  61:../Common/Minimal/integer.c **** /* Variables that are set to true within the calculation task to indicate
+  62:../Common/Minimal/integer.c **** that the task is still executing.  The check task sets the variable back to
+  63:../Common/Minimal/integer.c **** false, flagging an error if the variable is still false the next time it
+  64:../Common/Minimal/integer.c **** is called. */
+  65:../Common/Minimal/integer.c **** static BaseType_t xTaskCheck[ intgNUMBER_OF_TASKS ] = { ( BaseType_t ) pdFALSE };
+  66:../Common/Minimal/integer.c **** 
+  67:../Common/Minimal/integer.c **** /*-----------------------------------------------------------*/
+  68:../Common/Minimal/integer.c **** 
+  69:../Common/Minimal/integer.c **** void vStartIntegerMathTasks( UBaseType_t uxPriority )
+  70:../Common/Minimal/integer.c **** {
+  71:../Common/Minimal/integer.c **** short sTask;
+  72:../Common/Minimal/integer.c **** 
+  73:../Common/Minimal/integer.c **** 	for( sTask = 0; sTask < intgNUMBER_OF_TASKS; sTask++ )
+  74:../Common/Minimal/integer.c **** 	{
+  75:../Common/Minimal/integer.c **** 		xTaskCreate( vCompeteingIntMathTask, "IntMath", intgSTACK_SIZE, ( void * ) &( xTaskCheck[ sTask ]
+  76:../Common/Minimal/integer.c **** 	}
+  77:../Common/Minimal/integer.c **** }
+  78:../Common/Minimal/integer.c **** /*-----------------------------------------------------------*/
+  79:../Common/Minimal/integer.c **** 
+  80:../Common/Minimal/integer.c **** static portTASK_FUNCTION( vCompeteingIntMathTask, pvParameters )
+  81:../Common/Minimal/integer.c **** {
+ 187               	.LM0:
+ 188               	.LFBB1:
+ 189 0000 CF93      		push r28
+ 190 0002 DF93      		push r29
+ 191 0004 00D0      		rcall .
+ 192 0006 00D0      		rcall .
+ 193 0008 CDB7      		in r28,__SP_L__
+ 194 000a DEB7      		in r29,__SP_H__
+ 195               	/* prologue: function */
+ 196               	/* frame size = 4 */
+ 197               	/* stack size = 6 */
+ 198               	.L__stack_usage = 6
+ 199 000c 7C01      		movw r14,r24
+  82:../Common/Minimal/integer.c **** /* These variables are all effectively set to constants so they are volatile to
+  83:../Common/Minimal/integer.c **** ensure the compiler does not just get rid of them. */
+  84:../Common/Minimal/integer.c **** volatile long lValue;
+  85:../Common/Minimal/integer.c **** short sError = pdFALSE;
+ 201               	.LM1:
+ 202 000e 00E0      		ldi r16,0
+ 203 0010 10E0      		ldi r17,0
+  86:../Common/Minimal/integer.c **** volatile BaseType_t *pxTaskHasExecuted;
+  87:../Common/Minimal/integer.c **** 
+  88:../Common/Minimal/integer.c **** 	/* Set a pointer to the variable we are going to set to true each
+  89:../Common/Minimal/integer.c **** 	iteration.  This is also a good test of the parameter passing mechanism
+  90:../Common/Minimal/integer.c **** 	within each port. */
+  91:../Common/Minimal/integer.c **** 	pxTaskHasExecuted = ( volatile BaseType_t * ) pvParameters;
+  92:../Common/Minimal/integer.c **** 
+  93:../Common/Minimal/integer.c **** 	/* Keep performing a calculation and checking the result against a constant. */
+  94:../Common/Minimal/integer.c **** 	for( ;; )
+  95:../Common/Minimal/integer.c **** 	{
+  96:../Common/Minimal/integer.c **** 		/* Perform the calculation.  This will store partial value in
+  97:../Common/Minimal/integer.c **** 		registers, resulting in a good test of the context switch mechanism. */
+  98:../Common/Minimal/integer.c **** 		lValue = intgCONST1;
+ 205               	.LM2:
+ 206 0012 8BE7      		ldi r24,lo8(123)
+ 207 0014 882E      		mov r8,r24
+ 208 0016 912C      		mov r9,__zero_reg__
+ 209 0018 A12C      		mov r10,__zero_reg__
+ 210 001a B12C      		mov r11,__zero_reg__
+  99:../Common/Minimal/integer.c **** 		lValue += intgCONST2;
+ 100:../Common/Minimal/integer.c **** 
+ 101:../Common/Minimal/integer.c **** 		/* Yield in case cooperative scheduling is being used. */
+ 102:../Common/Minimal/integer.c **** 		#if configUSE_PREEMPTION == 0
+ 103:../Common/Minimal/integer.c **** 		{
+ 104:../Common/Minimal/integer.c **** 			taskYIELD();
+ 105:../Common/Minimal/integer.c **** 		}
+ 106:../Common/Minimal/integer.c **** 		#endif
+ 107:../Common/Minimal/integer.c **** 
+ 108:../Common/Minimal/integer.c **** 		/* Finish off the calculation. */
+ 109:../Common/Minimal/integer.c **** 		lValue *= intgCONST3;
+ 110:../Common/Minimal/integer.c **** 		lValue /= intgCONST4;
+ 212               	.LM3:
+ 213 001c 97E0      		ldi r25,lo8(7)
+ 214 001e 492E      		mov r4,r25
+ 215 0020 512C      		mov r5,__zero_reg__
+ 216 0022 612C      		mov r6,__zero_reg__
+ 217 0024 712C      		mov r7,__zero_reg__
+ 111:../Common/Minimal/integer.c **** 
+ 112:../Common/Minimal/integer.c **** 		/* If the calculation is found to be incorrect we stop setting the
+ 113:../Common/Minimal/integer.c **** 		TaskHasExecuted variable so the check task can see an error has
+ 114:../Common/Minimal/integer.c **** 		occurred. */
+ 115:../Common/Minimal/integer.c **** 		if( lValue != intgEXPECTED_ANSWER ) /*lint !e774 volatile used to prevent this being optimised ou
+ 116:../Common/Minimal/integer.c **** 		{
+ 117:../Common/Minimal/integer.c **** 			sError = pdTRUE;
+ 118:../Common/Minimal/integer.c **** 		}
+ 119:../Common/Minimal/integer.c **** 
+ 120:../Common/Minimal/integer.c **** 		if( sError == pdFALSE )
+ 121:../Common/Minimal/integer.c **** 		{
+ 122:../Common/Minimal/integer.c **** 			/* We have not encountered any errors, so set the flag that show
+ 123:../Common/Minimal/integer.c **** 			we are still executing.  This will be periodically cleared by
+ 124:../Common/Minimal/integer.c **** 			the check task. */
+ 125:../Common/Minimal/integer.c **** 			portENTER_CRITICAL();
+ 126:../Common/Minimal/integer.c **** 				*pxTaskHasExecuted = pdTRUE;
+ 219               	.LM4:
+ 220 0026 DD24      		clr r13
+ 221 0028 D394      		inc r13
+ 222               	.L2:
+  98:../Common/Minimal/integer.c **** 		lValue += intgCONST2;
+ 224               	.LM5:
+ 225 002a 8982      		std Y+1,r8
+ 226 002c 9A82      		std Y+2,r9
+ 227 002e AB82      		std Y+3,r10
+ 228 0030 BC82      		std Y+4,r11
+  99:../Common/Minimal/integer.c **** 		lValue += intgCONST2;
+ 230               	.LM6:
+ 231 0032 8981      		ldd r24,Y+1
+ 232 0034 9A81      		ldd r25,Y+2
+ 233 0036 AB81      		ldd r26,Y+3
+ 234 0038 BC81      		ldd r27,Y+4
+ 235 003a 895B      		subi r24,-71
+ 236 003c 9B46      		sbci r25,107
+ 237 003e AC4F      		sbci r26,-4
+ 238 0040 BF4F      		sbci r27,-1
+ 239 0042 8983      		std Y+1,r24
+ 240 0044 9A83      		std Y+2,r25
+ 241 0046 AB83      		std Y+3,r26
+ 242 0048 BC83      		std Y+4,r27
+ 109:../Common/Minimal/integer.c **** 		lValue /= intgCONST4;
+ 244               	.LM7:
+ 245 004a 2981      		ldd r18,Y+1
+ 246 004c 3A81      		ldd r19,Y+2
+ 247 004e 4B81      		ldd r20,Y+3
+ 248 0050 5C81      		ldd r21,Y+4
+ 249 0052 ADEF      		ldi r26,lo8(-3)
+ 250 0054 BFEF      		ldi r27,lo8(-1)
+ 251 0056 0E94 0000 		call __mulohisi3
+ 252 005a 6983      		std Y+1,r22
+ 253 005c 7A83      		std Y+2,r23
+ 254 005e 8B83      		std Y+3,r24
+ 255 0060 9C83      		std Y+4,r25
+ 110:../Common/Minimal/integer.c **** 
+ 257               	.LM8:
+ 258 0062 6981      		ldd r22,Y+1
+ 259 0064 7A81      		ldd r23,Y+2
+ 260 0066 8B81      		ldd r24,Y+3
+ 261 0068 9C81      		ldd r25,Y+4
+ 262 006a A301      		movw r20,r6
+ 263 006c 9201      		movw r18,r4
+ 264 006e 0E94 0000 		call __divmodsi4
+ 265 0072 2983      		std Y+1,r18
+ 266 0074 3A83      		std Y+2,r19
+ 267 0076 4B83      		std Y+3,r20
+ 268 0078 5C83      		std Y+4,r21
+ 115:../Common/Minimal/integer.c **** 		{
+ 270               	.LM9:
+ 271 007a 8981      		ldd r24,Y+1
+ 272 007c 9A81      		ldd r25,Y+2
+ 273 007e AB81      		ldd r26,Y+3
+ 274 0080 BC81      		ldd r27,Y+4
+ 275 0082 8B31      		cpi r24,27
+ 276 0084 9747      		sbci r25,119
+ 277 0086 AE4F      		sbci r26,-2
+ 278 0088 BF4F      		sbci r27,-1
+ 279 008a 01F0      		breq .L7
+ 280               	.L5:
+ 281 008c 01E0      		ldi r16,lo8(1)
+ 282 008e 10E0      		ldi r17,0
+ 283 0090 00C0      		rjmp .L2
+ 284               	.L7:
+ 120:../Common/Minimal/integer.c **** 		{
+ 286               	.LM10:
+ 287 0092 0115      		cp r16,__zero_reg__
+ 288 0094 1105      		cpc r17,__zero_reg__
+ 289 0096 01F4      		brne .L5
+ 125:../Common/Minimal/integer.c **** 				*pxTaskHasExecuted = pdTRUE;
+ 291               	.LM11:
+ 292               	/* #APP */
+ 293               	 ;  125 "../Common/Minimal/integer.c" 1
+ 294 0098 0FB6      		in		__tmp_reg__, __SREG__
+ 295               	 ;  0 "" 2
+ 296               	 ;  125 "../Common/Minimal/integer.c" 1
+ 297 009a F894      		cli
+ 298               	 ;  0 "" 2
+ 299               	 ;  125 "../Common/Minimal/integer.c" 1
+ 300 009c 0F92      		push	__tmp_reg__
+ 301               	 ;  0 "" 2
+ 303               	.LM12:
+ 304               	/* #NOAPP */
+ 305 009e F701      		movw r30,r14
+ 306 00a0 D082      		st Z,r13
+ 127:../Common/Minimal/integer.c **** 			portEXIT_CRITICAL();
+ 308               	.LM13:
+ 309               	/* #APP */
+ 310               	 ;  127 "../Common/Minimal/integer.c" 1
+ 311 00a2 0F90      		pop		__tmp_reg__
+ 312               	 ;  0 "" 2
+ 313               	 ;  127 "../Common/Minimal/integer.c" 1
+ 314 00a4 0FBE      		out		__SREG__, __tmp_reg__
+ 315               	 ;  0 "" 2
+ 316               	/* #NOAPP */
+ 317 00a6 00C0      		rjmp .L2
+ 323               	.Lscope1:
+ 325               		.stabd	78,0,0
+ 326               		.section	.rodata.str1.1,"aMS",@progbits,1
+ 327               	.LC0:
+ 328 0000 496E 744D 		.string	"IntMath"
+ 328      6174 6800 
+ 329               		.text
+ 332               	.global	vStartIntegerMathTasks
+ 334               	vStartIntegerMathTasks:
+ 335               		.stabd	46,0,0
+  70:../Common/Minimal/integer.c **** short sTask;
+ 337               	.LM14:
+ 338               	.LFBB2:
+ 339 00a8 EF92      		push r14
+ 340 00aa FF92      		push r15
+ 341 00ac 0F93      		push r16
+ 342               	/* prologue: function */
+ 343               	/* frame size = 0 */
+ 344               	/* stack size = 3 */
+ 345               	.L__stack_usage = 3
+  75:../Common/Minimal/integer.c **** 	}
+ 347               	.LM15:
+ 348 00ae E12C      		mov r14,__zero_reg__
+ 349 00b0 F12C      		mov r15,__zero_reg__
+ 350 00b2 082F      		mov r16,r24
+ 351 00b4 20E0      		ldi r18,lo8(xTaskCheck)
+ 352 00b6 30E0      		ldi r19,hi8(xTaskCheck)
+ 353 00b8 45E5      		ldi r20,lo8(85)
+ 354 00ba 50E0      		ldi r21,0
+ 355 00bc 60E0      		ldi r22,lo8(.LC0)
+ 356 00be 70E0      		ldi r23,hi8(.LC0)
+ 357 00c0 80E0      		ldi r24,lo8(gs(vCompeteingIntMathTask))
+ 358 00c2 90E0      		ldi r25,hi8(gs(vCompeteingIntMathTask))
+ 359 00c4 0E94 0000 		call xTaskCreate
+ 360               	/* epilogue start */
+  77:../Common/Minimal/integer.c **** /*-----------------------------------------------------------*/
+ 362               	.LM16:
+ 363 00c8 0F91      		pop r16
+ 364 00ca FF90      		pop r15
+ 365 00cc EF90      		pop r14
+ 366 00ce 0895      		ret
+ 368               	.Lscope2:
+ 370               		.stabd	78,0,0
+ 372               	.global	xAreIntegerMathsTaskStillRunning
+ 374               	xAreIntegerMathsTaskStillRunning:
+ 375               		.stabd	46,0,0
+ 128:../Common/Minimal/integer.c **** 		}
+ 129:../Common/Minimal/integer.c **** 
+ 130:../Common/Minimal/integer.c **** 		/* Yield in case cooperative scheduling is being used. */
+ 131:../Common/Minimal/integer.c **** 		#if configUSE_PREEMPTION == 0
+ 132:../Common/Minimal/integer.c **** 		{
+ 133:../Common/Minimal/integer.c **** 			taskYIELD();
+ 134:../Common/Minimal/integer.c **** 		}
+ 135:../Common/Minimal/integer.c **** 		#endif
+ 136:../Common/Minimal/integer.c **** 	}
+ 137:../Common/Minimal/integer.c **** }
+ 138:../Common/Minimal/integer.c **** /*-----------------------------------------------------------*/
+ 139:../Common/Minimal/integer.c **** 
+ 140:../Common/Minimal/integer.c **** /* This is called to check that all the created tasks are still running. */
+ 141:../Common/Minimal/integer.c **** BaseType_t xAreIntegerMathsTaskStillRunning( void )
+ 142:../Common/Minimal/integer.c **** {
+ 377               	.LM17:
+ 378               	.LFBB3:
+ 379               	/* prologue: function */
+ 380               	/* frame size = 0 */
+ 381               	/* stack size = 0 */
+ 382               	.L__stack_usage = 0
+ 143:../Common/Minimal/integer.c **** BaseType_t xReturn = pdTRUE;
+ 384               	.LM18:
+ 385 00d0 81E0      		ldi r24,lo8(1)
+ 386 00d2 9091 0000 		lds r25,xTaskCheck
+ 387 00d6 9111      		cpse r25,__zero_reg__
+ 388 00d8 00C0      		rjmp .L10
+ 389 00da 80E0      		ldi r24,0
+ 390               	.L10:
+ 144:../Common/Minimal/integer.c **** short sTask;
+ 145:../Common/Minimal/integer.c **** 
+ 146:../Common/Minimal/integer.c **** 	/* Check the maths tasks are still running by ensuring their check variables
+ 147:../Common/Minimal/integer.c **** 	are still being set to true. */
+ 148:../Common/Minimal/integer.c **** 	for( sTask = 0; sTask < intgNUMBER_OF_TASKS; sTask++ )
+ 149:../Common/Minimal/integer.c **** 	{
+ 150:../Common/Minimal/integer.c **** 		if( xTaskCheck[ sTask ] == pdFALSE )
+ 151:../Common/Minimal/integer.c **** 		{
+ 152:../Common/Minimal/integer.c **** 			/* The check has not incremented so an error exists. */
+ 153:../Common/Minimal/integer.c **** 			xReturn = pdFALSE;
+ 154:../Common/Minimal/integer.c **** 		}
+ 155:../Common/Minimal/integer.c **** 
+ 156:../Common/Minimal/integer.c **** 		/* Reset the check variable so we can tell if it has been set by
+ 157:../Common/Minimal/integer.c **** 		the next time around. */
+ 158:../Common/Minimal/integer.c **** 		xTaskCheck[ sTask ] = pdFALSE;
+ 392               	.LM19:
+ 393 00dc 1092 0000 		sts xTaskCheck,__zero_reg__
+ 159:../Common/Minimal/integer.c **** 	}
+ 160:../Common/Minimal/integer.c **** 
+ 161:../Common/Minimal/integer.c **** 	return xReturn;
+ 162:../Common/Minimal/integer.c **** }
+ 395               	.LM20:
+ 396 00e0 0895      		ret
+ 398               	.Lscope3:
+ 400               		.stabd	78,0,0
+ 401               		.local	xTaskCheck
+ 402               		.comm	xTaskCheck,1,1
+ 405               	.Letext0:
+ 406               		.ident	"GCC: (GNU) 5.4.0"
+ 407               	.global __do_copy_data
+ 408               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 integer.c
+     /tmp/ccDanb5N.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccDanb5N.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccDanb5N.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccDanb5N.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccDanb5N.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccDanb5N.s:184    .text:0000000000000000 vCompeteingIntMathTask
+     /tmp/ccDanb5N.s:334    .text:00000000000000a8 vStartIntegerMathTasks
+                             .bss:0000000000000000 xTaskCheck
+     /tmp/ccDanb5N.s:374    .text:00000000000000d0 xAreIntegerMathsTaskStillRunning
+
+UNDEFINED SYMBOLS
+__mulohisi3
+__divmodsi4
+xTaskCreate
+__do_copy_data
+__do_clear_bss
