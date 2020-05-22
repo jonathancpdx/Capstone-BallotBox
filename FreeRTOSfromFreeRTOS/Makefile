@@ -4,14 +4,14 @@ TARGET = freertos
 $(info TARGET=$(TARGET))
 
 # List all substems directories
-export SOURCE_DIR       = /home/nick/Downloads/Capstone-BallotBox/FreeRTOSfromFreeRTOS/SBBsource
-export SBB_DIR          = $(SOURCE_DIR)/sbb
-export LOG_DIR          = $(SOURCE_DIR)/logging
-export CRYPTO_DIR       = $(SOURCE_DIR)/crypto
-export CRYPTO_TEST_DIR  = $(SOURCE_DIR)/tests/crypto
-export LOGGING_TEST_DIR = $(SOURCE_DIR)/tests/logging
-export SBB_TEST_DIR     = $(SOURCE_DIR)/tests/sbb
-export INCLUDE_DIR      = $(SOURCE_DIR)/include
+export SOURCE_DIR       = /home/nick/Downloads/Capstone-BallotBox/FreeRTOSfromFreeRTOS
+export SBB_DIR          = $(SOURCE_DIR)/SBBsource/sbb
+export LOG_DIR          = $(SOURCE_DIR)/SBBsource/logging
+export CRYPTO_DIR       = $(SOURCE_DIR)/SBBsource/crypto
+export CRYPTO_TEST_DIR  = $(SOURCE_DIR)/SBBsource/tests/crypto
+export LOGGING_TEST_DIR = $(SOURCE_DIR)/SBBsource/tests/logging
+export SBB_TEST_DIR     = $(SOURCE_DIR)/SBBsource/tests/sbb
+export INCLUDE_DIR      = $(SOURCE_DIR)/SBBsource/include
 
 # Set correct C header location for macOS 10.14+ hosts
 UNAME := $(shell uname)
@@ -48,7 +48,7 @@ export USE_LED_BLINK_TASK=1
 all: sim avr
 
 avr:
-	cd $(SOURCE_DIR) ; \
+	cd $(SOURCE_DIR)/SBBsource ; \
 	$(MAKE) -f Makefile.AVR default
 	cp $(SOURCE_DIR)/default_ballot_box.* .
 

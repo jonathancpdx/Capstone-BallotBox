@@ -1,12 +1,3 @@
-# On command line:
-#
-# make all = Make software.
-# make clean = Clean out built project files.
-# make program = Download the hex file to the device, using avrdude.  Please
-#                customize the avrdude settings below first!
-# To rebuild project do "make clean" then "make all".
-
-
 # MCU name
 MCU = atmega328p
 
@@ -19,7 +10,6 @@ TARGET = rtosdemo
 # Optimization level, can be [0, 1, 2, 3, s]. 0 turns off optimization.
 # (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
 OPT = s
-
 
 # List C source files here. (C dependencies are automatically generated.)
 DEMO_DIR = ../Common/Minimal
@@ -42,39 +32,17 @@ $(DEMO_DIR)/PollQ.c \
 $(DEMO_DIR)/comtest.c \
 $(PORT_DIR)/port.c 
 
-
-# If there is more than one source file, append them above, or modify and
-# uncomment the following:
-#SRC += foo.c bar.c
-
-# You can also wrap lines by appending a backslash to the end of the line:
-#SRC += baz.c \
-#xyzzy.c
-
-
-
-# List Assembler source files here.
-# Make them always end in a capital .S.  Files ending in a lowercase .s
-# will not be considered source files but generated files (assembler
-# output from the compiler), and will be deleted upon "make clean"!
-# Even though the DOS/Win* filesystem matches both .s and .S the same,
-# it will preserve the spelling of the filenames, and gcc itself does
-# care about how the name is spelled on its command-line.
-ASRC = 
-
-
 # List any extra directories to look for include files here.
 #     Each directory must be seperated by a space.
-EXTRAINCDIRS = . ../../Source/include ../Common/include ../../Source/portable/GCC/ATMega323
 
+/FreeRTOS/Source/include
+/FreeRTOS/Demo/Common/include
+/FreeRTOS/Source/portable/GCC/ATMega328p
 
-# Optional compiler flags.
-#  -g:        generate debugging information (for GDB, or for COFF conversion)
-#  -O*:       optimization level
-#  -f...:     tuning, see gcc manual and avr-libc documentation
-#  -Wall...:  warning level
-#  -Wa,...:   tell GCC to pass this to the assembler.
-#    -ahlms:  create assembler listing
+$(shell pwd)/SBBsource/FreeRTOSv10.3.1/FreeRTOS/Source/portable/GCC/ATMega328p/port.c
+EXTRAINCDIRS = . ../../Source/include 
+../Common/include 
+../../Source/portable/GCC/ATMega323
 
 DEBUG_LEVEL=-g
 WARNINGS=-Wall -Wextra -Wshadow -Wpointer-arith -Wbad-function-cast -Wcast-align -Wsign-compare \
@@ -120,8 +88,6 @@ COPY = cp
 HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex
 ELFSIZE = $(SIZE) -A $(TARGET).elf
 
-
-
 # Define all object files.
 OBJ = $(SRC:.c=.o) $(ASRC:.S=.o) 
 
@@ -137,9 +103,6 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 # Default target.
 all: begin gccversion sizebefore $(TARGET).elf $(TARGET).hex $(TARGET).eep \
 	$(TARGET).lss $(TARGET).sym sizeafter finished end
-
-
-
 
 # Create final output files (.hex, .eep) from ELF output file.
 %.hex: %.elf

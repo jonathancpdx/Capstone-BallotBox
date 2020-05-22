@@ -32,21 +32,21 @@ export CPP		= avr-gcc
 export GCC		= avr-gcc
 export OBJCOPY 	= avr-objcopy
 export OBJDUMP 	= avr-objdump
-export SIZE 	= avr-size
+#SIZE is unused unless it export SIZE 	= avr-size
 export COMPILER_FLAGS = -mcmodel=medany #not sure if needed
 # TODO: Use -Werror only for GCC now
 export WERROR = -Werror
 
-export SOURCE_BASE_DIR = $(SOURCE_DIR)
-export INCLUDE_BASE_DIR = $(SOURCE_DIR)/include
-export FREERTOS_BASE_DIR = $(SOURCE_DIR)/FreeRTOSv10.3.1
+SOURCE_BASE_DIR = $(SOURCE_DIR)
+INCLUDE_BASE_DIR = $(SOURCE_DIR)/SBBsource/include
+FREERTOS_BASE_DIR = $(SOURCE_DIR)/FreeRTOSv10.3.1
 export FREERTOS_DEMO_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS/Demo/ATMega328p
 # export OS_INCLUDE_DIR = $(INCLUDE_BASE_DIR)/os/freertos
 export FREERTOS_SOURCE_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS/Source
 
-export SBB_SOURCE_DIR = $(SOURCE_BASE_DIR)/sbb
-export LOG_SOURCE_DIR = $(SOURCE_BASE_DIR)/logging
-export CRYPTO_SOURCE_DIR = $(SOURCE_BASE_DIR)/crypto
+export SBB_SOURCE_DIR = $(SOURCE_BASE_DIR)/SBBsource/sbb
+export LOG_SOURCE_DIR = $(SOURCE_BASE_DIR)/SBBsource/logging
+export CRYPTO_SOURCE_DIR = $(SOURCE_BASE_DIR)/SBBsource/crypto
 export SBB_INCLUDE_DIR = $(INCLUDE_BASE_DIR)/sbb
 export LOG_INCLUDE_DIR = $(INCLUDE_BASE_DIR)/logging
 export CRYPTO_INCLUDE_DIR = $(INCLUDE_BASE_DIR)/crypto
@@ -73,12 +73,13 @@ export PORT_SRC = $(FREERTOS_SOURCE_DIR)/portable/GCC/ATMega328p/port.c
 export INCLUDES = \
 	-I.  \
 	-I$(FREERTOS_SOURCE_DIR)/include \
+	-I$(FREERTOS_SOURCE_DIR)/ \
 	-I$(FREERTOS_SOURCE_DIR)/../Common/include \
-	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/ATMega323 \
+	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/ATMega328p \
 	-I$(FREERTOS_SOURCE_DIR)/include \
 	-I$(FREERTOS_DEMO_DIR)/../Common/include \
 	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/ATMega328p\
-	-I$(FREERTOS_DEMO_DIR)/demo \
+	-I$(FREERTOS_DEMO_DIR)/ \
 	-I$(FREERTOS_DEMO_DIR)/devices \
 	-I$(INCLUDE_DIR)\
 	-I$(OS_INCLUDE_DIR) \
@@ -98,12 +99,12 @@ export CFLAGS += -D GCC_MEGA_AVR  \
 	$(C_WARNINGS) \
 	$(INCLUDES)
 
-export ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp 
+export ASFLAGS = -x assembler-with-cpp 
 
 # Disable warnings for C++ for now
 # need to review and replace export CPPFLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
 
-export LDFLAGS	 = -T $(FREERTOS_DEMO_DIR)/link.ld -nostartfiles -nostdlib #$(ARCH) $(ABI)
+export LDFLAGS	 = -T $(FREERTOS_DEMO_DIR)/link.ld -nostartfiles -nostdlib 
 export LIBS	 =	-lc -lgcc
 
 OS_SRC = $(OS_DIR)/time.c \
@@ -210,11 +211,18 @@ CPP_OBJ = $(CPP_SRC:.cpp=.o)
 	OBJS_BOX3 = $(OBJS) $(BOX3_SRC:.c=.o)
 	OBJS_BOX4 = $(OBJS) $(BOX4_SRC:.c=.o)
 
-$(info ASFLAGS=$(ASFLAGS))
-$(info CFLAGS=$(CFLAGS))
-$(info ARFLAGS=$(ARFLAGS))
-$(info CC=$(CC))
-$(info GCC=$(GCC))
+$(info SOURCE_DIR = $(SOURCE_DIR))
+$(info LDFLAGS = $(LDFLAGS))
+$(info ASFLAGS = $(ASFLAGS))
+$(info CFLAGS are OPT + MCU + C_WARNINGS + WARNINGS + INCLUDES)
+$(info OPT = $(OPT))
+$(info MCU = $(MCU))
+$(info C_WARNINGS = $(C_WARNINGS))
+$(info WARNINGS = $(WARNINGS))
+$(info INCLUDES = $(INCLUDES))
+$(info ARFLAGS = $(ARFLAGS))
+$(info CC = $(CC))
+$(info GCC = $(GCC))
 
 # Link: create ELF output file from object files.
 .SECONDARY : $(TARGET).elf
