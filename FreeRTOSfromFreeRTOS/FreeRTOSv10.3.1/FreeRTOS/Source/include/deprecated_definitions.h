@@ -49,11 +49,11 @@ projects should not use them. */
 #endif
 
 #ifdef GCC_MEGA_AVR
-	#include "../portable/GCC/ATMega323/portmacro.h"
+	#include "../portable/GCC/ATMega328p/portmacro.h"
 #endif
 
 #ifdef IAR_MEGA_AVR
-	#include "../portable/IAR/ATMega323/portmacro.h"
+	#include "../portable/IAR/ATMega328p/portmacro.h"
 #endif
 
 #ifdef MPLAB_PIC24_PORT

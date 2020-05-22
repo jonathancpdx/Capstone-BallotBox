@@ -271,18 +271,18 @@
  341               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 heap_1.c
-     /tmp/ccezerrl.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccezerrl.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccezerrl.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccezerrl.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccezerrl.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccezerrl.s:185    .text:0000000000000000 pvPortMalloc
+     /tmp/cc1HMMEg.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc1HMMEg.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc1HMMEg.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc1HMMEg.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc1HMMEg.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc1HMMEg.s:185    .text:0000000000000000 pvPortMalloc
                              .bss:0000000000000000 pucAlignedHeap.2101
-     /tmp/ccezerrl.s:333    .bss:0000000000000004 ucHeap
-     /tmp/ccezerrl.s:331    .bss:0000000000000002 xNextFreeByte
-     /tmp/ccezerrl.s:268    .text:0000000000000064 vPortFree
-     /tmp/ccezerrl.s:285    .text:0000000000000066 vPortInitialiseBlocks
-     /tmp/ccezerrl.s:306    .text:0000000000000070 xPortGetFreeHeapSize
+     /tmp/cc1HMMEg.s:333    .bss:0000000000000004 ucHeap
+     /tmp/cc1HMMEg.s:331    .bss:0000000000000002 xNextFreeByte
+     /tmp/cc1HMMEg.s:268    .text:0000000000000064 vPortFree
+     /tmp/cc1HMMEg.s:285    .text:0000000000000066 vPortInitialiseBlocks
+     /tmp/cc1HMMEg.s:306    .text:0000000000000070 xPortGetFreeHeapSize
 
 UNDEFINED SYMBOLS
 vTaskSuspendAll

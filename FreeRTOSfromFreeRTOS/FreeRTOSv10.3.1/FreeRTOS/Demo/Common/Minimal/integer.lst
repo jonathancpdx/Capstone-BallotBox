@@ -368,15 +368,15 @@
  408               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 integer.c
-     /tmp/ccDanb5N.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccDanb5N.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccDanb5N.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccDanb5N.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccDanb5N.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccDanb5N.s:184    .text:0000000000000000 vCompeteingIntMathTask
-     /tmp/ccDanb5N.s:334    .text:00000000000000a8 vStartIntegerMathTasks
+     /tmp/cc6YhZiK.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc6YhZiK.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc6YhZiK.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc6YhZiK.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc6YhZiK.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc6YhZiK.s:184    .text:0000000000000000 vCompeteingIntMathTask
+     /tmp/cc6YhZiK.s:334    .text:00000000000000a8 vStartIntegerMathTasks
                              .bss:0000000000000000 xTaskCheck
-     /tmp/ccDanb5N.s:374    .text:00000000000000d0 xAreIntegerMathsTaskStillRunning
+     /tmp/cc6YhZiK.s:374    .text:00000000000000d0 xAreIntegerMathsTaskStillRunning
 
 UNDEFINED SYMBOLS
 __mulohisi3

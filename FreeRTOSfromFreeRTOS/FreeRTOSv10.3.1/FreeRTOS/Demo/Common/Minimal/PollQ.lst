@@ -526,18 +526,18 @@
  545               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 PollQ.c
-     /tmp/ccEX24SJ.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccEX24SJ.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccEX24SJ.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccEX24SJ.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccEX24SJ.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccEX24SJ.s:189    .text:0000000000000000 vPolledQueueProducer
-     /tmp/ccEX24SJ.s:534    .bss:0000000000000002 xPollingProducerCount
-     /tmp/ccEX24SJ.s:297    .text:0000000000000062 vPolledQueueConsumer
-     /tmp/ccEX24SJ.s:536    .bss:0000000000000003 xPollingConsumerCount
-     /tmp/ccEX24SJ.s:420    .text:00000000000000d4 vStartPolledQueueTasks
+     /tmp/cceZxCK0.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cceZxCK0.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cceZxCK0.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cceZxCK0.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cceZxCK0.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cceZxCK0.s:189    .text:0000000000000000 vPolledQueueProducer
+     /tmp/cceZxCK0.s:534    .bss:0000000000000002 xPollingProducerCount
+     /tmp/cceZxCK0.s:297    .text:0000000000000062 vPolledQueueConsumer
+     /tmp/cceZxCK0.s:536    .bss:0000000000000003 xPollingConsumerCount
+     /tmp/cceZxCK0.s:420    .text:00000000000000d4 vStartPolledQueueTasks
                              .bss:0000000000000000 xPolledQueue.2223
-     /tmp/ccEX24SJ.s:490    .text:000000000000012c xArePollingQueuesStillRunning
+     /tmp/cceZxCK0.s:490    .text:000000000000012c xArePollingQueuesStillRunning
 
 UNDEFINED SYMBOLS
 xQueueGenericSend

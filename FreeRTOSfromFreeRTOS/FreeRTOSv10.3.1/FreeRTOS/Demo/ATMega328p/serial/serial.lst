@@ -610,19 +610,19 @@
  662               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 serial.c
-     /tmp/ccDzdmKs.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccDzdmKs.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccDzdmKs.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccDzdmKs.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccDzdmKs.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccDzdmKs.s:204    .text:0000000000000000 xSerialPortInitMinimal
-     /tmp/ccDzdmKs.s:654    .bss:0000000000000002 xRxedChars
+     /tmp/ccdMX2CY.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccdMX2CY.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccdMX2CY.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccdMX2CY.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccdMX2CY.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccdMX2CY.s:204    .text:0000000000000000 xSerialPortInitMinimal
+     /tmp/ccdMX2CY.s:654    .bss:0000000000000002 xRxedChars
                              .bss:0000000000000000 xCharsForTx
-     /tmp/ccDzdmKs.s:323    .text:0000000000000092 xSerialGetChar
-     /tmp/ccDzdmKs.s:356    .text:00000000000000aa xSerialPutChar
-     /tmp/ccDzdmKs.s:412    .text:00000000000000e4 vSerialClose
-     /tmp/ccDzdmKs.s:470    .text:0000000000000100 SIG_UART_RECV
-     /tmp/ccDzdmKs.s:563    .text:0000000000000180 SIG_UART_DATA
+     /tmp/ccdMX2CY.s:323    .text:0000000000000092 xSerialGetChar
+     /tmp/ccdMX2CY.s:356    .text:00000000000000aa xSerialPutChar
+     /tmp/ccdMX2CY.s:412    .text:00000000000000e4 vSerialClose
+     /tmp/ccdMX2CY.s:470    .text:0000000000000100 SIG_UART_RECV
+     /tmp/ccdMX2CY.s:563    .text:0000000000000180 SIG_UART_DATA
 
 UNDEFINED SYMBOLS
 xQueueGenericCreate

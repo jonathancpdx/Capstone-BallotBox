@@ -1532,16 +1532,16 @@
  1629               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 regtest.c
-     /tmp/cc7iNh3z.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc7iNh3z.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc7iNh3z.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc7iNh3z.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc7iNh3z.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc7iNh3z.s:177    .text:0000000000000000 prvRegisterCheck1
-     /tmp/cc7iNh3z.s:1621   .bss:0000000000000000 xRegTestError
-     /tmp/cc7iNh3z.s:857    .text:0000000000000144 prvRegisterCheck2
-     /tmp/cc7iNh3z.s:1543   .text:0000000000000288 vStartRegTestTasks
-     /tmp/cc7iNh3z.s:1594   .text:00000000000002c4 xAreRegTestTasksStillRunning
+     /tmp/cccQvJ41.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cccQvJ41.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cccQvJ41.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cccQvJ41.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cccQvJ41.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cccQvJ41.s:177    .text:0000000000000000 prvRegisterCheck1
+     /tmp/cccQvJ41.s:1621   .bss:0000000000000000 xRegTestError
+     /tmp/cccQvJ41.s:857    .text:0000000000000144 prvRegisterCheck2
+     /tmp/cccQvJ41.s:1543   .text:0000000000000288 vStartRegTestTasks
+     /tmp/cccQvJ41.s:1594   .text:00000000000002c4 xAreRegTestTasksStillRunning
 
 UNDEFINED SYMBOLS
 xTaskCreate

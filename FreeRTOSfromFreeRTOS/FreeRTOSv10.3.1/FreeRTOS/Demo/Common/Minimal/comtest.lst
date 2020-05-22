@@ -526,17 +526,17 @@
  497               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 comtest.c
-     /tmp/ccDX5O48.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccDX5O48.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccDX5O48.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccDX5O48.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccDX5O48.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccDX5O48.s:197    .text:0000000000000000 vComRxTask
-     /tmp/ccDX5O48.s:488    .bss:0000000000000001 uxBaseLED
+     /tmp/ccek94X5.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccek94X5.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccek94X5.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccek94X5.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccek94X5.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccek94X5.s:197    .text:0000000000000000 vComRxTask
+     /tmp/ccek94X5.s:488    .bss:0000000000000001 uxBaseLED
                              .bss:0000000000000000 uxRxLoops
-     /tmp/ccDX5O48.s:308    .text:0000000000000078 vComTxTask
-     /tmp/ccDX5O48.s:393    .text:00000000000000c0 vAltStartComTestTasks
-     /tmp/ccDX5O48.s:458    .text:0000000000000114 xAreComTestTasksStillRunning
+     /tmp/ccek94X5.s:308    .text:0000000000000078 vComTxTask
+     /tmp/ccek94X5.s:393    .text:00000000000000c0 vAltStartComTestTasks
+     /tmp/ccek94X5.s:458    .text:0000000000000114 xAreComTestTasksStillRunning
 
 UNDEFINED SYMBOLS
 xSerialGetChar

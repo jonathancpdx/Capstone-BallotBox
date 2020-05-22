@@ -465,16 +465,16 @@
  439               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccb0WFbe.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccb0WFbe.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccb0WFbe.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccb0WFbe.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccb0WFbe.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccb0WFbe.s:203    .text:0000000000000000 vErrorChecks
-     /tmp/ccb0WFbe.s:429    .data:0000000000000000 ulDummyVariable.2422
+     /tmp/ccbuhVsf.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccbuhVsf.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccbuhVsf.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccbuhVsf.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccbuhVsf.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccbuhVsf.s:203    .text:0000000000000000 vErrorChecks
+     /tmp/ccbuhVsf.s:429    .data:0000000000000000 ulDummyVariable.2422
                              .bss:0000000000000000 xErrorHasOccurred.2427
-     /tmp/ccb0WFbe.s:301    .text.startup:0000000000000000 main
-     /tmp/ccb0WFbe.s:408    .text:0000000000000070 vApplicationIdleHook
+     /tmp/ccbuhVsf.s:301    .text.startup:0000000000000000 main
+     /tmp/ccbuhVsf.s:408    .text:0000000000000070 vApplicationIdleHook
 
 UNDEFINED SYMBOLS
 vTaskDelay

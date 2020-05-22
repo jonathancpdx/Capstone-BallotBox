@@ -389,9 +389,9 @@ uint8_t ucHighByte, ucLowByte;
 
 	/* Enable the interrupt - this is okay as interrupt are currently globally
 	disabled. */
-	ucLowByte = TIMSK0;
+	ucLowByte = TIMSK1;
 	ucLowByte |= portCOMPARE_MATCH_A_INTERRUPT_ENABLE;
-	TIMSK0 = ucLowByte;
+	TIMSK1 = ucLowByte;
 }
 /*-----------------------------------------------------------*/
 

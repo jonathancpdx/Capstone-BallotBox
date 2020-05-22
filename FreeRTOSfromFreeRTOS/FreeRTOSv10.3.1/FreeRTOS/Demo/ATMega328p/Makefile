@@ -47,7 +47,7 @@ OPT = s
 # List C source files here. (C dependencies are automatically generated.)
 DEMO_DIR = ../Common/Minimal
 SOURCE_DIR = ../../Source
-PORT_DIR = ../../Source/portable/GCC/ATMega323
+PORT_DIR = ../../Source/portable/GCC/ATMega328P
 
 SRC= \
 main.c \

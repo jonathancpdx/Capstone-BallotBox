@@ -534,18 +534,18 @@
  555               	.global __do_clear_bss
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 crflash.c
-     /tmp/cczbVVlW.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cczbVVlW.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cczbVVlW.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cczbVVlW.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cczbVVlW.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cczbVVlW.s:189    .text:0000000000000000 prvFlashCoRoutine
+     /tmp/cc1Sgiap.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc1Sgiap.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc1Sgiap.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc1Sgiap.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc1Sgiap.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc1Sgiap.s:189    .text:0000000000000000 prvFlashCoRoutine
                              .bss:0000000000000000 xFlashQueue
-     /tmp/cczbVVlW.s:544    .data:0000000000000000 xCoRoutineFlashStatus
-     /tmp/cczbVVlW.s:300    .text:000000000000008c prvFixedDelayCoRoutine
-     /tmp/cczbVVlW.s:532    .rodata:0000000000000000 xFlashRates.2107
-     /tmp/cczbVVlW.s:435    .text:000000000000013c vStartFlashCoRoutines
-     /tmp/cczbVVlW.s:512    .text:000000000000018a xAreFlashCoRoutinesStillRunning
+     /tmp/cc1Sgiap.s:544    .data:0000000000000000 xCoRoutineFlashStatus
+     /tmp/cc1Sgiap.s:300    .text:000000000000008c prvFixedDelayCoRoutine
+     /tmp/cc1Sgiap.s:532    .rodata:0000000000000000 xFlashRates.2107
+     /tmp/cc1Sgiap.s:435    .text:000000000000013c vStartFlashCoRoutines
+     /tmp/cc1Sgiap.s:512    .text:000000000000018a xAreFlashCoRoutinesStillRunning
 
 UNDEFINED SYMBOLS
 xQueueCRReceive
