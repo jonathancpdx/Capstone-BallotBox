@@ -1,1 +1,0 @@
-# Voter Verification Device

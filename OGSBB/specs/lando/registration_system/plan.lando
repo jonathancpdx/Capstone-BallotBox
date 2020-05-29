@@ -1,8 +1,0 @@
-Registration System Plan
-indexing
-  owner: Alexander Bakst <abakst@galois.com>
-  contributors: Reuben Broadfoot, Noah Rich, Joe Kiniry
-  effort: low
-  complexity: low
-  risk: low
-  dependencies: Logging  
