@@ -8,10 +8,6 @@
 #include "event_groups.h"
 #include "stream_buffer.h"
 #include "semphr.h"
-#include "bsp.h"
-#include "gpio.h"
-#include "serLcd.h"
-#include "ds1338rtc.h"
 #include "crypto/crypto.h"
 #include "log_os_defs.h"
 

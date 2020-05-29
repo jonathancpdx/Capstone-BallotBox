@@ -13,13 +13,14 @@ DISABLE_NETWORK     ?= yes
 # Voting System Definitions
 include Makefile.common
 
-export OS_DIR  = $(SOURCE_DIR)/os/freertos
+export OS_DIR  = $(SOURCE_DIR)/SBBsource/os/freertos
+$(info OS_DIR=$(OS_DIR))
 
 # MCU name
-export MCU = atmega328p
+MCU = atmega328p
 
 # Output format. (can be srec, ihex, binary)
-export FORMAT = ihex
+FORMAT = ihex
 
 # Optimization level, can be [0, 1, 2, 3, s]. 0 turns off optimization.
 # (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
@@ -33,13 +34,14 @@ export GCC		= avr-gcc
 export OBJCOPY 	= avr-objcopy
 export OBJDUMP 	= avr-objdump
 #SIZE is unused unless it export SIZE 	= avr-size
-export COMPILER_FLAGS = -mcmodel=medany #not sure if needed
+export COMPILER_FLAGS = 
 # TODO: Use -Werror only for GCC now
 export WERROR = -Werror
 
 SOURCE_BASE_DIR = $(SOURCE_DIR)
 INCLUDE_BASE_DIR = $(SOURCE_DIR)/SBBsource/include
 FREERTOS_BASE_DIR = $(SOURCE_DIR)/FreeRTOSv10.3.1
+$(info FREERTOS_BASE_DIR=$(FREERTOS_BASE_DIR))
 export FREERTOS_DEMO_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS/Demo/ATMega328p
 # export OS_INCLUDE_DIR = $(INCLUDE_BASE_DIR)/os/freertos
 export FREERTOS_SOURCE_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS/Source
@@ -99,7 +101,7 @@ export CFLAGS += -D GCC_MEGA_AVR  \
 	$(C_WARNINGS) \
 	$(INCLUDES)
 
-export ASFLAGS = -x assembler-with-cpp 
+export ASFLAGS = -mmcu=$(MCU) -gstabs -x assembler-with-cpp 
 
 # Disable warnings for C++ for now
 # need to review and replace export CPPFLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)

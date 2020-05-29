@@ -34,6 +34,7 @@ Changes from V2.6.0
 	  WinAVR.
 */
 
+#define  __AVR_ATmega328P__
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
@@ -115,8 +116,6 @@ extern volatile TCB_t * volatile pxCurrentTCB;
 					"push	r29						\n\t"	\
 					"push	r30						\n\t"	\
 					"push	r31						\n\t"	\
-					"lds	r26, pxCurrentTCB		\n\t"	\
-					"lds	r27, pxCurrentTCB + 1	\n\t"	\
 					"in		r0, 0x3d				\n\t"	\
 					"st		x+, r0					\n\t"	\
 					"in		r0, 0x3e				\n\t"	\

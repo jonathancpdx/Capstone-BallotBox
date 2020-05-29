@@ -53,13 +53,13 @@ avr:
 	cp $(SOURCE_DIR)/default_ballot_box.* .
 
 sim:
-	cd $(SOURCE_DIR) ; \
+	cd $(SOURCE_DIR)/SBBsource ; \
 	$(MAKE) -f Makefile.AVR_sim default
 	cp $(SOURCE_DIR)/default_ballot_box_sim.* .
 
 
 clean_all:
-	cd $(SOURCE_DIR) ; \
+	cd $(SOURCE_DIR)/SBBsource ; \
 	$(MAKE) -f Makefile.AVR clean
 	cd $(SOURCE_DIR) ; \
 	$(MAKE) -f Makefile.AVR_sim clean
