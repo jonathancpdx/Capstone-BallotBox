@@ -1,0 +1,178 @@
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/good1.txt
+
+file size of log = 331
+file size of log = 331
+valid_secure_log_security - checking only entry MAC
+valid_first_entry - MACs match OK
+Number of entries=1
+Log file security OK
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/good2.txt
+
+file size of log = 662
+file size of log = 662
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs match OK
+valid_secure_log_security - checking validity of entry 2
+valid_log_entry - hashes match OK
+Number of entries=2
+Log file security OK
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/good3.txt
+
+file size of log = 993
+file size of log = 993
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs match OK
+valid_secure_log_security - checking validity of entry 2
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 3
+valid_log_entry - hashes match OK
+Number of entries=3
+Log file security OK
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/goodmany.txt
+
+file size of log = 2648
+file size of log = 2648
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs match OK
+valid_secure_log_security - checking validity of entry 2
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 3
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 4
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 5
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 6
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 7
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 8
+valid_log_entry - hashes match OK
+Number of entries=8
+Log file security OK
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/bad1data.txt
+
+file size of log = 331
+file size of log = 331
+valid_secure_log_security - checking only entry MAC
+valid_first_entry - MACs do not match
+Number of entries=1
+Log file security FAILED
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/bad1mac.txt
+
+file size of log = 331
+file size of log = 331
+valid_secure_log_security - checking only entry MAC
+valid_first_entry - MACs do not match
+Number of entries=1
+Log file security FAILED
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/bad3data2.txt
+
+file size of log = 993
+file size of log = 993
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs match OK
+valid_secure_log_security - checking validity of entry 2
+valid_log_entry - hashes do not match
+Number of entries=3
+Log file security FAILED
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/bad3data3.txt
+
+file size of log = 993
+file size of log = 993
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs match OK
+valid_secure_log_security - checking validity of entry 2
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 3
+valid_log_entry - hashes do not match
+Number of entries=3
+Log file security FAILED
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/bad3hash2.txt
+
+file size of log = 993
+file size of log = 993
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs match OK
+valid_secure_log_security - checking validity of entry 2
+valid_log_entry - hashes do not match
+Number of entries=3
+Log file security FAILED
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/bad3hash3.txt
+
+file size of log = 993
+file size of log = 993
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs match OK
+valid_secure_log_security - checking validity of entry 2
+valid_log_entry - hashes match OK
+valid_secure_log_security - checking validity of entry 3
+valid_log_entry - hashes do not match
+Number of entries=3
+Log file security FAILED
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/missing_first_block.txt
+
+file size of log = 662
+file size of log = 662
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs do not match
+Number of entries=2
+Log file security FAILED
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/missing_middle_block.txt
+
+file size of log = 662
+file size of log = 662
+valid_secure_log_security - checking first entry MAC
+valid_first_entry - MACs match OK
+valid_secure_log_security - checking validity of entry 2
+valid_log_entry - hashes do not match
+Number of entries=2
+Log file security FAILED
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting open remote file name to test_data/junk1.txt
+
+file size of log = 331
+file size of log = 331
+valid_secure_log_security - checking only entry MAC
+Log_IO_Read_Base64_Entry - length wrong
+valid_first_entry - MACs do not match
+Number of entries=1
+Log file security FAILED

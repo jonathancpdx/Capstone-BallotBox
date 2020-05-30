@@ -1,0 +1,38 @@
+# Set defaults
+NETWORK_LOGS        = no
+FS_LOGS             = no
+FS_TYPE		    = FAT
+PEEK_POKE_SERVER    = no
+USE_RTC_CLOCK       = 0
+VOTING_SYSTEM_DEBUG = yes
+USE_CLI_TASK        = yes
+SIMULATION          = no
+AXI_DEBUG_PRINT     = no
+NETWORK_LOG_DEBUG   = no
+DISABLE_NETWORK     = yes
+USE_LED_BLINK_TASK  = 1
+FPGA                = no
+
+ARCH                  = -march=rv32im
+ABI                   = -mabi=ilp32
+ARCHTARGET            = riscv64-unknown-elf
+COMPILER_FLAGS        = -mcmodel=medany
+MCU                   =
+FORMAT                = 
+HEAP                  = heap_4.c
+
+FREERTOS_BASE_DIR        = ../FreeRTOS-mirror
+FREERTOS_PLUS_SOURCE_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS-Plus/Source
+FREERTOS_TCP_SOURCE_DIR  = $(FREERTOS_PLUS_SOURCE_DIR)/FreeRTOS-Plus-TCP
+FREERTOS_DEMO_DIR        = $(FREERTOS_BASE_DIR)/FreeRTOS/Demo/RISC-V_Galois_P1
+
+export CRT0         = $(FREERTOS_DEMO_DIR)/bsp/boot.S
+
+export PORT_SRC     = $(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V/port.c
+export PORT_ASM     = $(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V/portASM.S
+export PORT_HEADERS = $(FREERTOS_TCP_SOURCE_DIR)/portable/Compiler/GCC \
+                      -I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V
+PLATFORM_ASFLAGS ?= -I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V/chip_specific_extensions/RV32I_CLINT_no_extensions \
+	-DportasmHANDLE_INTERRUPT=external_interrupt_handler
+
+include Makefile.freertos

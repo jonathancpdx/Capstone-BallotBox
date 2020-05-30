@@ -1,0 +1,35 @@
+# Set defaults
+NETWORK_LOGS        = no
+FS_LOGS             = no
+FS_TYPE		    = FAT
+PEEK_POKE_SERVER    = no
+USE_RTC_CLOCK       = 0
+VOTING_SYSTEM_DEBUG = yes
+USE_CLI_TASK        = yes
+SIMULATION          = no
+AXI_DEBUG_PRINT     = no
+NETWORK_LOG_DEBUG   = no
+DISABLE_NETWORK     = yes
+USE_LED_BLINK_TASK  = 1
+FPGA                = no
+
+ARCH                = 
+ABI                 = 
+ARCHTARGET          = avr
+COMPILER_FLAGS      =
+MCU                 = atmega328p
+FORMAT              = ihex
+CRT0                =
+HEAP                = heap_1.c
+PORT_SRC            =
+PORT_ASM            =
+
+FREERTOS_BASE_DIR        = ../Capstone-BallotBox/FreeRTOSfromFreeRTOS/FreeRTOSv10.3.1
+export FREERTOS_DEMO_DIR = $(FREERTOS_BASE_DIR)/FreeRTOS/Demo/ATMega328p
+export PORT_HEADERS      = $(FREERTOS_BASE_DIR)/FreeRTOS/Source/portable/GCC/ATMega328p
+FREERTOS_PLUS_SOURCE_DIR = 
+FREERTOS_TCP_SOURCE_DIR  =
+PLATFORM_ASFLAGS         = -x assembler-with-cpp
+
+include Makefile.freertos
+

@@ -1,0 +1,30 @@
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting remote file name to test3log.txt
+
+space index is 256
+hash index is 260
+second space index is 304
+first mac index is 305
+first line-ending index is 329
+total bytes to send is 331
+total passed back is 331
+space index is 256
+hash index is 260
+second space index is 304
+first mac index is 305
+first line-ending index is 329
+total bytes to send is 331
+total passed back is 331
+space index is 256
+hash index is 260
+second space index is 304
+first mac index is 305
+first line-ending index is 329
+total bytes to send is 331
+total passed back is 331
+file size of log = 993
+Num entries in the files is 3
+test3log.txt exists - pass
+non_existant.txt does not exist - pass
