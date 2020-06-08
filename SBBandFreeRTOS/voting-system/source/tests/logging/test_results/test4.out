@@ -1,0 +1,23 @@
+unpadded: 300
+  padded: 304
+  spaces: 4
+Setting remote file name to test4log.txt
+
+space index is 256
+hash index is 260
+second space index is 304
+first mac index is 305
+first line-ending index is 329
+total bytes to send is 331
+total passed back is 331
+space index is 256
+hash index is 260
+second space index is 304
+first mac index is 305
+first line-ending index is 329
+total bytes to send is 331
+total passed back is 331
+Setting open remote file name to test4log.txt
+
+file size of log = 662
+number of entries=2 - test passed successfully!

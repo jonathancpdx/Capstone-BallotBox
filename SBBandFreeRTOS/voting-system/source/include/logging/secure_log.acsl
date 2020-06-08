@@ -1,0 +1,61 @@
+/**
+ * Secure Log ACSL specification
+ * @refines log.lando
+ * @refines log.cry
+ */
+
+#ifndef __SECURE_LOG_API_ACSL__
+#define __SECURE_LOG_API_ACSL__
+
+#include "secure_log_t.h"
+#include "../crypto/crypto.acsl"
+
+// @spec kiniry An algebraic specification of secure logs should be
+// added here, much like we have in `sbb.acsl`, complementing and
+// depending upon `log.acsl`.  This specification should be type
+// isomorphic to, and behaviorally equivalent to, that which is
+// specified by Joey in the Cryptol spec of secure logging.
+
+// @spec kiniry In order to write a strong spec here, we need to
+// rely upon the specification of the crypto subsystem.
+
+// @spec kiniry The axiomatic model here should refine the Cryptol
+// specification found in `log.cry`.  Preferably we should use the
+// same identifiers or a straightforward mapping of for identifers.
+// Verified Cryptol *properties* should map to ACSL *lemma*s since we
+// have assurance for them via Cryptol or SAW.  Cryptol definitions
+// map to ACSL predicates or function definitions (inductive, axioms,
+// or otherwise).
+
+// @todo kiniry Below is a sketch of the secure log theory that
+// I have started to map to the Cryptol spec.
+
+/*@ axiomatic secure_log_theory {
+  @   type authenticated_key;
+  @   type model_secure_log_entry = base_block  | hashchained_block ;
+  @   type initial_log_entry = model_secure_log_entry;
+  @   type model_secure_log = \list<model_secure_log_entry>;
+  @   logic model_secure_log_entry
+  @     new_log(initial_log_entry e,
+  @             authenticated_key k) = base_block;
+  @   logic model_secure_log update_log(model_secure_log l,
+  @                                     model_secure_log_entry e);
+  @   logic model_secure_log_entry to_model_entry( secure_log_entry le);
+  @
+  @   logic integer model_entry_length(model_secure_log_entry ls);
+  @
+  @   axiom base_block_length:
+  @     \forall model_secure_log_entry le; 
+  @        le == base_block ==> model_entry_length(le) == LOG_ENTRY_LENGTH;
+  @
+  @   axiom hashchained_block_length:
+  @     \forall model_secure_log_entry le; 
+  @        le == hashchained_block ==> model_entry_length(le) == SHA256_DIGEST_LENGTH_BYTES;
+  @
+  @   axiom secure_log_entry_length:
+  @     \forall model_secure_log_entry le; 
+  @        model_entry_length(le) == SECURE_LOG_ENTRY_LENGTH;
+  @
+  @ }
+  @*/
+#endif
