@@ -54,22 +54,31 @@ Changes from V2.6.0
 static volatile unsigned char ucCurrentOutputValue = partstALL_OUTPUTS_OFF; /*lint !e956 File scope parameters okay here. */
 
 /*-----------------------------------------------------------*/
-
+// Set All PORTB to PORTD if trying to access PORTD, same goes for PORTC comments will show how to do so
+// PORTB corresponds to output pins 8 through 13 on Arduino UNO R3 with ATmega328P Processor
+// PORTC corresponds to Analog input pins A0 through A5 on Arduino UNO R3 with ATmega328P Processor
+// PORTD corresponds to output pins 0 through 7 on Arduino UNO R3 with ATmega328P Processor 
 void vParTestInitialise( void )
 {
 	ucCurrentOutputValue = partstALL_OUTPUTS_OFF;
-
+	
 	/* Set port B direction to outputs.  Start with all output off. */
-	DDRB = partstALL_BITS_OUTPUT;
-	//PORTB = ucCurrentOutputValue;
+	// PORT B Data Direction Register 
+	// Refrence arduino.cc/en/Reference/PortManipulation
+	DDRB = partstALL_BITS_OUTPUT; //For PORTB, change to DDRD for PORTD and DDRC for PORTC
+
+// PORTB = ucCurrentOutputValue; Commenting this line out was what allowed us to figure out how to turn on and off the LED
+// Had to move vParTestToggleLED code into here because LED wasn't blinking otherwise
+// Hypothesis code stops reading before it hits vParTestToggleLED and only checks what's in  vParTestInitialise  
+
 	        vTaskSuspendAll();
         {
                 for (;;)
                 {
-                        PORTB = 0b00100000;
-                        _delay_ms(2000);
-                        PORTB = 0b00000000;
-                        _delay_ms(2000);
+                        PORTB = 0b00100000; // This turns on LED for PORTB, To turn on LED for PORTD change to  PORTD = 0b00000010;
+                        _delay_ms(500);     // Speed to change how fast LED blinks on and off
+                        PORTB = 0b00000000; // Turn off LED for all PORTs
+                        _delay_ms(500);
 
                 }
         }
@@ -98,7 +107,7 @@ unsigned char ucBit = ( unsigned char ) 1;
 				ucCurrentOutputValue |= ucBit;
 			}
 
-			PORTB = ucCurrentOutputValue;
+			PORTB = ucCurrentOutputValue; //Switch to PORTD if trying to access PORTD
 		}
 		xTaskResumeAll();
 	}
@@ -110,7 +119,7 @@ void vParTestToggleLED()
 	{
 		for (;;)
 		{
-			PORTB = 0b00100000;
+			PORTB = 0b00100000; 
 			_delay_ms(500);
 			PORTB = 0b00000000;
 			_delay_ms(500);

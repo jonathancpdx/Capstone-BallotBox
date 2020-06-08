@@ -33,6 +33,29 @@ April 5th, 2020 - Team (WEB)
 
 April 6th, 2020 -  Team + PSU Advisor (WEB)
 
+April 17th, 2020 -  Team + PSU Advisor (WEB)
+
+April 23rd, 2020 -  Team (WEB)
+
+April 30th, 2020 -  Team  (WEB)
+
+May 1st, 2020 -  Team + PSU Advisor (WEB)
+
+May 3rd, 2020 -  Team (WEB)
+
+May 4th, 2020 -  Team + Sponsor (WEB)
+
+May 8th, 2020 -  Team + PSU Advisor (WEB)
+
+May 14th, 2020 -  Team (WEB)
+
+May 22nd, 2020 -  Team + PSU Advisor (WEB)
+
+May 28th, 2020 -  Team (WEB)
+
+May 31st, 2020 -  Team (WEB)
+
+
 
 
 
