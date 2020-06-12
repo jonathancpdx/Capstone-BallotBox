@@ -55,7 +55,15 @@ May 28th, 2020 -  Team (WEB)
 
 May 31st, 2020 -  Team (WEB)
 
+June 3rd, 2020 - Team (WEB)
 
+June 8th, 2020 - Team (WEB)
+
+June 9th, 2020 - Team (WEB)
+
+June 10th, 2020 - Team (WEB)
+
+June 12th, 2020 - Jonathan & Jiaqi (WEB)
 
 
 
